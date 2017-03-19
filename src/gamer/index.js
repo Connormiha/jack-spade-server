@@ -24,4 +24,4 @@ class Gamer {
     }
 }
 
-module.exports = Gamer;
+export default Gamer;

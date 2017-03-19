@@ -1,4 +1,4 @@
-const Game = require('game');
+import Game from 'game';
 
 describe('Game (class)', () => {
     it('should have instance', ()=> {

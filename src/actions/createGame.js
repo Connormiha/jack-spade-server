@@ -1,5 +1,5 @@
-const Games = require('games');
-const Game = require('game');
+import Games from 'games';
+import Game from 'game';
 
 let id = 0;
 
@@ -15,4 +15,4 @@ const createGame = () => {
     return game;
 };
 
-module.exports = createGame;
+export default createGame;

@@ -16,4 +16,4 @@ class Games {
     }
 }
 
-module.exports = Games;
+export default Games;

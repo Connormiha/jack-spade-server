@@ -17,7 +17,7 @@
     "lint": "gulp lint",
     "precommit": "NODE_ENV=pre_commit npm run lint",
     "prepush": "npm test",
-    "start": "node ./src/app.js",
+    "start": "babel-node ./src/run.js",
     "test": "jest --no-cache",
     "upgrade": "yarn upgrade-interactive --exact"
   },
@@ -50,6 +50,8 @@
   },
   "dependencies": {
     "app-module-path": "2.2.0",
+    "babel-cli": "6.24.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.24.0",
     "body-parser": "1.17.1",
     "express": "4.15.2"
   }

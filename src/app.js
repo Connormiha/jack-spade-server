@@ -1,10 +1,8 @@
-require('app-module-path').addPath(__dirname);
-
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from 'express';
+import bodyParser from 'body-parser';
 const app = express();
 
-const apiGameCreate = require('api/game/create');
+import apiGameCreate from 'api/game/create';
 
 // const crypto = require('crypto');
 

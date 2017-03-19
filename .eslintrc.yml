@@ -5,6 +5,8 @@ env:
   node: true
   es6: true
   jest: true
+parserOptions:
+  sourceType: module
 rules:
   object-shorthand: error
   no-lone-blocks: error
