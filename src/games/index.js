@@ -1,5 +1,3 @@
-const Game = require('game');
-
 class Games {
     constructor() {
         this._games = new Map();

@@ -42,8 +42,9 @@
     ]
   },
   "devDependencies": {
+    "eslint": "3.18.0",
     "gulp": "3.9.1",
-    "gulp-tslint": "7.1.0",
+    "gulp-eslint": "3.0.1",
     "husky": "0.13.2",
     "jest-cli": "19.0.2"
   },
