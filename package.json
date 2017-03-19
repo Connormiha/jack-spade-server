@@ -1,0 +1,55 @@
+{
+  "name": "jack-spade-server",
+  "description": "",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "Mikhail Bodrov <connormiha1@gmail.com>",
+  "engines": {
+    "node": ">=6.6.0",
+    "npm": ">=3.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Connormiha/jack-spade-server.git"
+  },
+  "scripts": {
+    "coverage": "jest --coverage",
+    "lint": "gulp lint",
+    "precommit": "NODE_ENV=pre_commit npm run lint",
+    "prepush": "npm test",
+    "start": "node ./src/app.js",
+    "test": "jest --no-cache",
+    "upgrade": "yarn upgrade-interactive --exact"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ],
+    "testRegex": "/__tests__/.*\\.spec\\.js$",
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "watchman": false,
+    "notify": true,
+    "collectCoverage": false,
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "setupFiles": [
+      "<rootDir>/__tests__/setup.js"
+    ]
+  },
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-tslint": "7.1.0",
+    "husky": "0.13.2",
+    "jest-cli": "19.0.2"
+  },
+  "dependencies": {
+    "app-module-path": "2.2.0",
+    "body-parser": "1.17.1",
+    "express": "4.15.2"
+  }
+}
