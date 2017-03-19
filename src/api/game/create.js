@@ -1,17 +1,10 @@
-const Games = require('games');
-const Game = require('game');
-
-let id = 0;
-const games = new Games();
+const createGame = require('actions/createGame');
 
 const callback = (req, res) => {
-    id++;
-    const game = new Game({id});
-
-    games.addGame(game);
+    const game = createGame();
 
     res.json({
-        id
+        id: game.id
     });
 };
 

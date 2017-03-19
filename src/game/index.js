@@ -1,6 +1,10 @@
 class Game {
-    constructor({gamers}) {
-        this._gamers = gamers;
+    constructor({id}) {
+        this._id = id;
+    }
+
+    get id() {
+        return this._id;
     }
 }
 
