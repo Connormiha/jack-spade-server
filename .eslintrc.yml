@@ -5,3 +5,13 @@ env:
   node: true
   es6: true
   jest: true
+rules:
+  object-shorthand: error
+  no-lone-blocks: error
+  no-lonely-if: error
+  no-mixed-operators: error
+  no-tabs: error
+  prefer-arrow-callback: error
+  prefer-const: error
+  space-before-blocks: error
+  semi: error

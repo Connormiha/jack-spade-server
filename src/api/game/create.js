@@ -13,6 +13,6 @@ const callback = (req, res) => {
     res.json({
         id
     });
-}
+};
 
 module.exports = callback;
