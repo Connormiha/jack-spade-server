@@ -1,4 +1,4 @@
-class Games {
+export class Games {
     constructor() {
         this._games = new Map();
     }
@@ -7,8 +7,8 @@ class Games {
         this._games.set(game.id, game);
     }
 
-    deleteCard(game) {
-        this._games.delete(game);
+    deleteGame(id) {
+        this._games.delete(id);
     }
 
     getGamesCount() {
@@ -16,4 +16,4 @@ class Games {
     }
 }
 
-export default Games;
+export default new Games();

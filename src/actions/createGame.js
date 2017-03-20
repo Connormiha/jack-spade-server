@@ -1,9 +1,7 @@
-import Games from 'games';
+import games from 'games';
 import Game from 'game';
 
 let id = 0;
-
-const games = new Games();
 
 const createGame = () => {
     id++;

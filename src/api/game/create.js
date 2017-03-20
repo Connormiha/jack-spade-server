@@ -1,4 +1,4 @@
-const createGame = require('actions/createGame');
+import createGame from 'actions/createGame';
 
 const callback = (req, res) => {
     const game = createGame();

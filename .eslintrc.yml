@@ -21,6 +21,8 @@ rules:
   no-sequences: error
   no-spaced-func: error
   no-tabs: error
+  no-undefined: error
+  no-unneeded-ternary: error
   prefer-arrow-callback: error
   prefer-const: error
   space-before-blocks: error
