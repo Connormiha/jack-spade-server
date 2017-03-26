@@ -15,10 +15,11 @@
   "scripts": {
     "coverage": "jest --coverage",
     "lint": "gulp lint",
-    "precommit": "NODE_ENV=pre_commit npm run lint",
-    "prepush": "npm test",
-    "start": "babel-node ./src/run.js",
+    "precommit": "NODE_ENV=pre_commit npm run types-check && npm run lint",
+    "prepush": "npm run types-check && npm test",
+    "start": "npm run types-check && babel-node ./src/run.js",
     "test": "jest --no-cache",
+    "types-check": "flow src",
     "upgrade": "yarn upgrade-interactive --exact"
   },
   "jest": {
@@ -42,16 +43,20 @@
     ]
   },
   "devDependencies": {
+    "babel-eslint": "7.2.1",
     "eslint": "3.18.0",
+    "eslint-plugin-flowtype": "2.30.4",
+    "flow-bin": "0.42.0",
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
-    "husky": "0.13.2",
+    "husky": "0.13.3",
     "jest-cli": "19.0.2"
   },
   "dependencies": {
     "app-module-path": "2.2.0",
     "babel-cli": "6.24.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.24.0",
+    "babel-plugin-transform-flow-strip-types": "6.22.0",
     "body-parser": "1.17.1",
     "express": "4.15.2"
   }
