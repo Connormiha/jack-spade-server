@@ -1,12 +1,14 @@
+// @flow
+
 import games from 'games';
 import Game from 'game';
 
-let id = 0;
+let id: number = 0;
 
-const createGame = () => {
+const createGame = (): Game => {
     id++;
 
-    const game = new Game({id});
+    const game: Game = new Game({id});
 
     games.addGame(game);
 

@@ -1,8 +1,20 @@
+// @flow
+
 import deleteGame from 'actions/deleteGame';
 
-const callback = (req, res) => {
-    deleteGame(req.body.id);
-    res.status(204);
+declare class bodyparser$RequestBodyJson extends express$Request {
+    body: any
+}
+
+const callback = (req: bodyparser$RequestBodyJson, res: express$Response): void => {
+    const result = deleteGame(req.body.id);
+
+    if (result.success) {
+        res.status(204);
+    } else {
+        res.status(400);
+    }
+
     res.end();
 };
 

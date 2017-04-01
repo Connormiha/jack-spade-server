@@ -1,20 +1,12 @@
 {
-  "moduleFileExtensions": [
-    "js",
-    "json"
-  ],
   "testRegex": "/__tests__/.*\\.spec\\.js$",
   "moduleDirectories": [
     "node_modules",
     "src"
   ],
-  "watchman": false,
   "notify": true,
-  "collectCoverage": false,
+  "bail": true,
   "collectCoverageFrom": [
     "src/**/*.js"
-  ],
-  "setupFiles": [
-    "<rootDir>/__tests__/setup.js"
   ]
 }

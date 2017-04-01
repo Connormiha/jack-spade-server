@@ -8,7 +8,11 @@ export class Games {
     }
 
     deleteGame(id) {
+        const hasGame = this._games.has(id);
+
         this._games.delete(id);
+
+        return hasGame;
     }
 
     getGamesCount() {

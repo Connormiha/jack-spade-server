@@ -30,3 +30,6 @@ rules:
   prefer-const: error
   space-before-blocks: error
   semi: error
+globals:
+  express$Request: true
+  express$Response: true
