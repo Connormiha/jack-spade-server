@@ -5,6 +5,10 @@ import users from 'users';
 import deleteUser from 'actions/deleteUser';
 
 describe('Actions deleteUser', () => {
+    afterEach(() => {
+        users.clear();
+    });
+
     it('should delete user', () => {
         const user: User = new User({id: 1});
 

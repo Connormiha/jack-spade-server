@@ -21,6 +21,10 @@ export class Users {
         return hasUser;
     }
 
+    clear() {
+        this._users = new Map();
+    }
+
     get count(): number {
         return this._users.size;
     }

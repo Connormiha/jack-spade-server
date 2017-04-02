@@ -5,6 +5,10 @@ import games from 'games';
 import deleteGame from 'actions/deleteGame';
 
 describe('Actions deleteGame', () => {
+    afterEach(() => {
+        games.clear();
+    });
+
     it('should delete game', () => {
         const game: Game = new Game({id: 1});
 

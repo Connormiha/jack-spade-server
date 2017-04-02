@@ -2,7 +2,8 @@
   "testRegex": "/__tests__/.*\\.spec\\.js$",
   "moduleDirectories": [
     "node_modules",
-    "src"
+    "src",
+    "__tests__"
   ],
   "notify": true,
   "bail": true,

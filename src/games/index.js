@@ -21,6 +21,10 @@ export class Games {
         return hasGame;
     }
 
+    clear() {
+        this._games = new Map();
+    }
+
     get count(): number {
         return this._games.size;
     }
