@@ -2,12 +2,9 @@
 
 import deleteUser from 'actions/deleteUser';
 
-declare class bodyparser$RequestBodyJson extends express$Request {
-    body: any
-}
-
-const callback = (req: bodyparser$RequestBodyJson, res: express$Response): void => {
-    const result = deleteUser(req.body.id);
+const callback = (req: express$Request, res: express$Response): void => {
+    const body: any = req.body;
+    const result = deleteUser(body.id);
 
     if (result.success) {
         res.status(204);
