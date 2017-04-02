@@ -21,7 +21,7 @@ export class Users {
         return hasUser;
     }
 
-    getCount(): number {
+    get count(): number {
         return this._users.size;
     }
 }

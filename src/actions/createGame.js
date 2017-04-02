@@ -10,7 +10,7 @@ const createGame = (): Game => {
 
     const game: Game = new Game({id});
 
-    games.addGame(game);
+    games.add(game);
 
     return game;
 };

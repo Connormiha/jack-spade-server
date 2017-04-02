@@ -9,11 +9,11 @@ export class Games {
         this._games = new Map();
     }
 
-    addGame(game: Game) {
+    add(game: Game) {
         this._games.set(game.id, game);
     }
 
-    deleteGame(id: number): boolean {
+    delete(id: number): boolean {
         const hasGame = this._games.has(id);
 
         this._games.delete(id);
@@ -21,7 +21,7 @@ export class Games {
         return hasGame;
     }
 
-    getGamesCount(): number {
+    get count(): number {
         return this._games.size;
     }
 }
