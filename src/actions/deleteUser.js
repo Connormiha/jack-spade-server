@@ -3,7 +3,7 @@
 import users from 'users';
 
 const deleteUser = (id: number): any => {
-    const success = users.deleteGame(id);
+    const success = users.delete(id);
 
     return {
         success

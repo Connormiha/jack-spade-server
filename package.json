@@ -31,7 +31,7 @@
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
     "husky": "0.13.3",
-    "jest-cli": "19.0.2"
+    "jest": "^19.0.2"
   },
   "dependencies": {
     "app-module-path": "2.2.0",
