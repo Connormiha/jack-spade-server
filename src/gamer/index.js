@@ -1,26 +1,39 @@
+// @flow
+
+type id_type = number;
+type init_params = {id: id_type};
+
 class Gamer {
-    constructor() {
+    _id: id_type;
+    _cards: Set<any>;
+
+    constructor({id}: init_params) {
+        this._id = id;
         this._cards = new Set();
     }
 
-    addCard(card) {
+    addCard(card: any): void {
         this._cards.add(card);
     }
 
-    deleteCard(card) {
+    deleteCard(card: any): void {
         this._cards.delete(card);
     }
 
-    hasCard(card) {
+    hasCard(card: any): boolean {
         return this._cards.has(card);
     }
 
-    getAllCards() {
+    getAllCards(): any {
         return this._cards;
     }
 
-    getCountCards() {
-        return this._cards.size();
+    getCountCards(): number {
+        return this._cards.size;
+    }
+
+    get id(): id_type {
+        return this._id;
     }
 }
 

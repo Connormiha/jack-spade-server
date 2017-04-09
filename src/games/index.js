@@ -3,13 +3,13 @@
 import type Game from 'game';
 
 export class Games {
-    _games: Map<number, any>;
+    _games: Map<number, Game>;
 
     constructor() {
         this._games = new Map();
     }
 
-    add(game: Game) {
+    add(game: Game): void {
         this._games.set(game.id, game);
     }
 
@@ -21,8 +21,12 @@ export class Games {
         return hasGame;
     }
 
-    clear() {
+    clear(): void {
         this._games = new Map();
+    }
+
+    get(id: number): Game | void {
+        return this._games.get(id);
     }
 
     get count(): number {

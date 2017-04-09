@@ -1,0 +1,1 @@
+export const TOO_MACH_MEMBERS = 'TOO_MACH_MEMBERS';

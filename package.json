@@ -16,11 +16,11 @@
     "postinstall": "flow-typed install",
     "coverage": "jest --coverage --config jest.json",
     "lint": "gulp lint",
-    "precommit": "NODE_ENV=pre_commit npm run types-check && npm run lint",
+    "precommit": "NODE_ENV=pre_commit npm run types && npm run lint",
     "prepush": "npm run types-check && npm test",
     "start": "npm run types-check && babel-node ./src/run.js",
     "test": "jest --no-cache --config jest.json",
-    "types-check": "flow src",
+    "types": "flow src",
     "upgrade": "yarn upgrade-interactive --exact"
   },
   "devDependencies": {
