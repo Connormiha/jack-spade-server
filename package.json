@@ -17,7 +17,7 @@
     "coverage": "jest --coverage --config jest.json",
     "lint": "gulp lint",
     "precommit": "NODE_ENV=pre_commit npm run types && npm run lint",
-    "prepush": "npm run types-check && npm test",
+    "prepush": "npm run types && npm test",
     "start": "npm run types-check && babel-node ./src/run.js",
     "test": "jest --no-cache --config jest.json",
     "types": "flow src",
