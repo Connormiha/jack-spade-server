@@ -25,7 +25,7 @@ describe('API user/delete', () => {
     });
 
     it('should success delete exist user', () => {
-        const user = new User({id: 1});
+        const user = new User({id: '1'});
 
         users.add(user);
 

@@ -14,7 +14,7 @@ describe('API game/delete', () => {
         const end = jest.fn();
         const status = jest.fn();
         const response: express$Response = Object.assign(anyObject(), {end, status});
-        const request: express$Request = Object.assign(anyObject(), {body: {id: 1}});
+        const request: express$Request = Object.assign(anyObject(), {body: {id: '1'}});
 
         apiDeleteGame(request, response);
 
@@ -25,7 +25,7 @@ describe('API game/delete', () => {
     });
 
     it('should success delete exist game', () => {
-        const game = new Game({id: 1});
+        const game = new Game({id: '1'});
 
         games.add(game);
 

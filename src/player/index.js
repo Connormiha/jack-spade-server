@@ -1,9 +1,9 @@
 // @flow
 
-type id_type = number;
+type id_type = string;
 type init_params = {id: id_type};
 
-class Gamer {
+class Player {
     _id: id_type;
     _cards: Set<any>;
 
@@ -37,4 +37,4 @@ class Gamer {
     }
 }
 
-export default Gamer;
+export default Player;

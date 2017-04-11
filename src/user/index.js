@@ -1,10 +1,11 @@
 // @flow
 
-type id_type = number;
+type id_type = string;
 type init_params = {id: id_type};
 
 class User {
     _id: id_type;
+
     constructor({id}: init_params) {
         this._id = id;
     }

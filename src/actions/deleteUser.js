@@ -2,7 +2,7 @@
 
 import users from 'users';
 
-const deleteUser = (id: number): any => {
+const deleteUser = (id: string): any => {
     const success = users.delete(id);
 
     return {

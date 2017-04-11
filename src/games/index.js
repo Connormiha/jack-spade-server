@@ -3,7 +3,7 @@
 import type Game from 'game';
 
 export class Games {
-    _games: Map<number, Game>;
+    _games: Map<string, Game>;
 
     constructor() {
         this._games = new Map();
@@ -13,7 +13,7 @@ export class Games {
         this._games.set(game.id, game);
     }
 
-    delete(id: number): boolean {
+    delete(id: string): boolean {
         const hasGame = this._games.has(id);
 
         this._games.delete(id);
@@ -25,7 +25,7 @@ export class Games {
         this._games = new Map();
     }
 
-    get(id: number): Game | void {
+    get(id: string): Game | void {
         return this._games.get(id);
     }
 

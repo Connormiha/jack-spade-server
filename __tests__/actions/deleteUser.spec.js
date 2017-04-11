@@ -10,7 +10,7 @@ describe('Actions deleteUser', () => {
     });
 
     it('should delete user', () => {
-        const user: User = new User({id: 1});
+        const user: User = new User({id: '1'});
 
         users.add(user);
 

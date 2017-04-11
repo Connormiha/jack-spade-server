@@ -10,7 +10,7 @@ describe('Actions deleteGame', () => {
     });
 
     it('should delete game', () => {
-        const game: Game = new Game({id: 1});
+        const game: Game = new Game({id: '1'});
 
         games.add(game);
 
