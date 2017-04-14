@@ -14,7 +14,7 @@ const addPlayer = (gameId: string): Player => {
     const game: Game | void = games.get(gameId);
 
     if (!game) {
-        throw new Error({name: GAME_NOT_FOUND});
+        throw new Error(GAME_NOT_FOUND);
     }
 
     const player: Player = new Player({id: String(id)});

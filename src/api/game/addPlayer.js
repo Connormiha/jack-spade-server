@@ -9,7 +9,7 @@ const callback = (req: express$Request, res: express$Response): void => {
         player = addPlayer(body.gameId);
     } catch (e) {
         res.status(400);
-        res.json({error: e.name});
+        res.json({error: e.message});
         return;
     }
 

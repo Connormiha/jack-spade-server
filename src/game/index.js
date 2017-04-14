@@ -3,14 +3,14 @@
 import {TOO_MACH_MEMBERS} from 'errors';
 import type Player from 'player';
 
-const MAX_MEMBERS = 6;
+export const MAX_MEMBERS = 6;
 
 type id_type = string;
 type init_params = {id: id_type};
 
 class Game {
     _id: id_type;
-    _players: Map<string, any>;
+    _players: Map<string, Player>;
 
     constructor({id}: init_params) {
         this._id = id;
@@ -21,7 +21,7 @@ class Game {
         if (this.countMembers < MAX_MEMBERS) {
             this._players.set(player.id, player);
         } else {
-            throw new Error({name: TOO_MACH_MEMBERS});
+            throw new Error(TOO_MACH_MEMBERS);
         }
     }
 

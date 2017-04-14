@@ -5,7 +5,7 @@
     "src",
     "__tests__"
   ],
-  "notify": true,
+  "notify": false,
   "bail": true,
   "collectCoverageFrom": [
     "src/**/*.js"
