@@ -26,8 +26,8 @@
   "devDependencies": {
     "babel-eslint": "7.2.2",
     "eslint": "3.19.0",
-    "eslint-plugin-flowtype": "2.30.4",
-    "flow-bin": "0.44.0",
+    "eslint-plugin-flowtype": "2.31.0",
+    "flow-bin": "0.44.2",
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
     "husky": "0.13.3",

@@ -5,11 +5,11 @@ import type Player from 'player';
 
 export const MAX_MEMBERS = 6;
 
-type id_type = string;
-type init_params = {id: id_type};
+type init_params = {id: string};
 
 class Game {
-    _id: id_type;
+    _id: string;
+    _mainPlayerId: string;
     _players: Map<string, Player>;
 
     constructor({id}: init_params) {
@@ -23,9 +23,13 @@ class Game {
         } else {
             throw new Error(TOO_MACH_MEMBERS);
         }
+
+        if (this.countMembers === 1) {
+            this._mainPlayerId = player.id;
+        }
     }
 
-    get id(): id_type {
+    get id(): string {
         return this._id;
     }
 
