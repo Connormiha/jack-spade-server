@@ -30,3 +30,43 @@ export type Card = {
     +suit: CardSuit;
     +value: CardValue;
 };
+
+export const CARD_SPADE_6: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_6};
+export const CARD_SPADE_7: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_7};
+export const CARD_SPADE_8: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_8};
+export const CARD_SPADE_9: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_9};
+export const CARD_SPADE_10: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_10};
+export const CARD_SPADE_JADE: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_JADE};
+export const CARD_SPADE_QUEEN: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_QUEEN};
+export const CARD_SPADE_KING: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_KING};
+export const CARD_SPADE_ACE: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_ACE};
+
+export const CARD_CLUB_6: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_6};
+export const CARD_CLUB_7: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_7};
+export const CARD_CLUB_8: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_8};
+export const CARD_CLUB_9: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_9};
+export const CARD_CLUB_10: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_10};
+export const CARD_CLUB_JADE: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_JADE};
+export const CARD_CLUB_QUEEN: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_QUEEN};
+export const CARD_CLUB_KING: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_KING};
+export const CARD_CLUB_ACE: Card = {suit: CARD_SUIT_CLUB, value: CARD_VALUE_ACE};
+
+export const CARD_HEART_6: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_6};
+export const CARD_HEART_7: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_7};
+export const CARD_HEART_8: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_8};
+export const CARD_HEART_9: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_9};
+export const CARD_HEART_10: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_10};
+export const CARD_HEART_JADE: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_JADE};
+export const CARD_HEART_QUEEN: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_QUEEN};
+export const CARD_HEART_KING: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_KING};
+export const CARD_HEART_ACE: Card = {suit: CARD_SUIT_HEART, value: CARD_VALUE_ACE};
+
+export const CARD_DIAMOND_6: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_6};
+export const CARD_DIAMOND_7: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_7};
+export const CARD_DIAMOND_8: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_8};
+export const CARD_DIAMOND_9: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_9};
+export const CARD_DIAMOND_10: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_10};
+export const CARD_DIAMOND_JADE: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_JADE};
+export const CARD_DIAMOND_QUEEN: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_QUEEN};
+export const CARD_DIAMOND_KING: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_KING};
+export const CARD_DIAMOND_ACE: Card = {suit: CARD_SUIT_DIAMOND, value: CARD_VALUE_ACE};
