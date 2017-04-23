@@ -26,10 +26,10 @@ export type CardValue = 'CARD_VALUE_6' |
                         'CARD_VALUE_KING' |
                         'CARD_VALUE_ACE';
 
-export type Card = {
+export type Card = {|
     +suit: CardSuit;
     +value: CardValue;
-};
+|};
 
 export const CARD_SPADE_6: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_6};
 export const CARD_SPADE_7: Card = {suit: CARD_SUIT_SPADE, value: CARD_VALUE_7};
