@@ -13,7 +13,6 @@
     "url": "git://github.com/Connormiha/jack-spade-server.git"
   },
   "scripts": {
-    "postinstall": "flow-typed install",
     "coverage": "jest --coverage --config jest.json",
     "lint": "gulp lint",
     "precommit": "NODE_ENV=pre_commit npm run types && npm run lint",
@@ -39,7 +38,6 @@
     "babel-plugin-transform-es2015-modules-commonjs": "6.24.1",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "body-parser": "1.17.1",
-    "express": "4.15.2",
-    "flow-typed": "2.1.1"
+    "express": "4.15.2"
   }
 }
