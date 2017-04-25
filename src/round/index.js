@@ -1,5 +1,7 @@
 // @flow
 
+import {PLAYER_NOT_FOUND, ROUND_STEP_CARD_INCORRECT} from 'errors';
+import {CARD_SPADE_JADE} from 'card';
 import type {Card} from 'card';
 
 export type RoundPlayer = {
@@ -17,10 +19,27 @@ export type RoundInitialParams = {|
     currentOrder: number
 |};
 
+export const ROUND_STEP_TYPE_ATTACK = 'attack';
+export const ROUND_STEP_TYPE_DEFENSE = 'defense';
+
+export type RoundStepType = 'attack' | 'defense';
+
+type RoundDropCard = {|
+    ownerId: string,
+    card: Card
+|};
+
+type createStepParam = {|
+    playerId: string,
+    stepType: RoundStepType,
+    card: Card
+|};
+
 class Round {
     _trumpCard: Card;
     _players: Array<RoundPlayerInner>;
     _currentOrder: number;
+    _currentStepStore: Array<RoundDropCard>;
 
     constructor({trumpCard, players, currentOrder}: RoundInitialParams) {
         this._trumpCard = trumpCard;
@@ -29,6 +48,73 @@ class Round {
         }));
 
         this._currentOrder = currentOrder;
+        this._currentStepStore = [];
+    }
+
+    _calcPoints() {
+
+    }
+
+    _getPlayerById(): RoundPlayerInner {
+        return this._players[0];
+    }
+
+    _hasPlayer(id: string): boolean {
+        for (const item of this._players) {
+            if (item.id === id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    _isCorrectStep(playerId: string, card: Card): boolean {
+        const headCard = this._currentStepStore[0].card;
+        const player = this._getPlayerById(playerId);
+
+        if (player.cards.length === 1) {
+            return true;
+        }
+
+        if (headCard === CARD_SPADE_JADE) {
+            // Should take the strongest trump
+            // this._getStrongetsCard();
+        } else {
+            if (headCard.suit === card.suit) {
+                return true;
+            }
+
+            if (card === CARD_SPADE_JADE) {
+                return true;
+            }
+
+            if (player.cards.every((item) => (item.suit !== headCard.suit || item === CARD_SPADE_JADE))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    createStep({playerId, stepType, card}: createStepParam) {
+        if (!this._hasPlayer(playerId)) {
+            throw new Error(PLAYER_NOT_FOUND);
+        }
+
+        if (stepType === ROUND_STEP_TYPE_DEFENSE || this._isCorrectStep(playerId, card)) {
+            this._currentStepStore.push({
+                ownerId: playerId,
+                card
+            });
+        } else {
+            throw new Error(ROUND_STEP_CARD_INCORRECT);
+        }
+
+        if (this._currentStepStore.length === this._players.length) {
+            this._calcPoints();
+            this._currentStepStore = [];
+        }
     }
 }
 

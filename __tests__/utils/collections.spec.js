@@ -1,11 +1,11 @@
 // @flow
 
-import {getRandomCards} from 'utils/generators';
+import {getRandomCards} from 'utils/collections';
 import uniq from 'lodash/uniq';
 
 import type {Card} from 'card';
 
-describe('Utils/generators', () => {
+describe('Utils/collections', () => {
     describe('getRandomCards', () => {
         it('should work getRandomCards', () => {
             const cards = getRandomCards(5);
