@@ -1,7 +1,7 @@
 // @flow
 
 import {PLAYER_NOT_FOUND, ROUND_STEP_CARD_INCORRECT} from 'errors';
-import {CARD_SPADE_JADE} from 'card';
+import {CARD_SPADE_JACK} from 'card';
 import type {Card} from 'card';
 
 export type RoundPlayer = {
@@ -77,7 +77,7 @@ class Round {
             return true;
         }
 
-        if (headCard === CARD_SPADE_JADE) {
+        if (headCard === CARD_SPADE_JACK) {
             // Should take the strongest trump
             // this._getStrongetsCard();
         } else {
@@ -85,11 +85,11 @@ class Round {
                 return true;
             }
 
-            if (card === CARD_SPADE_JADE) {
+            if (card === CARD_SPADE_JACK) {
                 return true;
             }
 
-            if (player.cards.every((item) => (item.suit !== headCard.suit || item === CARD_SPADE_JADE))) {
+            if (player.cards.every((item) => (item.suit !== headCard.suit || item === CARD_SPADE_JACK))) {
                 return true;
             }
         }

@@ -1,3 +1,5 @@
+// @flow
+
 export const TOO_MACH_MEMBERS = 'TOO_MACH_MEMBERS';
 export const GAME_NOT_FOUND = 'GAME_NOT_FOUND';
 

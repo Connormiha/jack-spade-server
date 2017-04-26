@@ -2,7 +2,7 @@
 
 import type {Card} from 'card';
 import {
-    CARD_DECK, CARD_SPADE_JADE,
+    CARD_DECK, CARD_SPADE_JACK,
     CARD_SUIT_SPADE, CARD_SUIT_CLUB, CARD_SUIT_HEART, CARD_SUIT_DIAMOND,
     CARD_DESK_SPADE, CARD_DESK_CLUB, CARD_DESK_HEART, CARD_DESK_DIAMOND
 } from 'card';
@@ -33,7 +33,7 @@ export const getStrongestCard = (desk: Array<Card>, trumpCard: Card): Card | voi
         maxCard: Card;
 
     for (const item of desk) {
-        if (item === CARD_SPADE_JADE) {
+        if (item === CARD_SPADE_JACK) {
             return item;
         }
 
