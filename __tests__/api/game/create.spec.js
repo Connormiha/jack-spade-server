@@ -1,6 +1,6 @@
 // @flow
 
-import games from 'games';
+import games from 'components/games';
 import apiCreateGame from 'api/game/create';
 import {anyObject} from 'mock/objects';
 

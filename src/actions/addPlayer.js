@@ -1,10 +1,10 @@
 // @flow
 
-import games from 'games';
-import Player from 'Player';
+import games from 'components/games';
+import Player from 'components/Player';
 import {GAME_NOT_FOUND} from 'errors';
 
-import type Game from 'game';
+import type Game from 'components/game';
 
 let id: number = 0;
 

@@ -1,7 +1,7 @@
 // @flow
 
 import {TOO_MACH_MEMBERS} from 'errors';
-import type Player from 'player';
+import type Player from 'components/player';
 
 export const MAX_MEMBERS = 6;
 

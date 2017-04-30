@@ -1,6 +1,6 @@
 // @flow
 
-import Game from 'game';
+import Game from 'components/game';
 
 describe('Game (class)', () => {
     it('should have instance', ()=> {

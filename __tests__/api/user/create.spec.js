@@ -1,6 +1,6 @@
 // @flow
 
-import users from 'users';
+import users from 'components/users';
 import apiCreateGame from 'api/user/create';
 import {anyObject} from 'mock/objects';
 

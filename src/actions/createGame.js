@@ -1,7 +1,7 @@
 // @flow
 
-import games from 'games';
-import Game from 'game';
+import games from 'components/games';
+import Game from 'components/game';
 
 let id: number = 0;
 

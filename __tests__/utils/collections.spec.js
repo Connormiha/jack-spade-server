@@ -3,8 +3,8 @@
 import {getRandomCards, getStrongestCard} from 'utils/collections';
 import uniq from 'lodash/uniq';
 
-import * as card from 'card';
-import type {Card} from 'card';
+import * as card from 'components/card';
+import type {Card} from 'components/card';
 
 describe('Utils/collections', () => {
     describe('getRandomCards', () => {

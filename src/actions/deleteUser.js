@@ -1,6 +1,6 @@
 // @flow
 
-import users from 'users';
+import users from 'components/users';
 
 const deleteUser = (id: string): any => {
     const success = users.delete(id);

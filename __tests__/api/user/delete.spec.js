@@ -1,7 +1,7 @@
 // @flow
 
-import users from 'users';
-import User from 'user';
+import users from 'components/users';
+import User from 'components/user';
 import apiDeleteUser from 'api/user/delete';
 import {anyObject} from 'mock/objects';
 

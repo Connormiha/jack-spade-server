@@ -1,11 +1,11 @@
 // @flow
 
-import type {Card} from 'card';
+import type {Card} from 'components/card';
 import {
     CARD_DECK, CARD_SPADE_JACK,
     CARD_SUIT_SPADE, CARD_SUIT_CLUB, CARD_SUIT_HEART, CARD_SUIT_DIAMOND,
     CARD_DESK_SPADE, CARD_DESK_CLUB, CARD_DESK_HEART, CARD_DESK_DIAMOND
-} from 'card';
+} from 'components/card';
 
 const SUITS_DESK = {
     [CARD_SUIT_SPADE]: CARD_DESK_SPADE,

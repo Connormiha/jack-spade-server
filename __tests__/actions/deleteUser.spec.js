@@ -1,7 +1,7 @@
 // @flow
 
-import User from 'user';
-import users from 'users';
+import User from 'components/user';
+import users from 'components/users';
 import deleteUser from 'actions/deleteUser';
 
 describe('Actions deleteUser', () => {

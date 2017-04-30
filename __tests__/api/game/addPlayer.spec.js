@@ -1,10 +1,10 @@
 // @flow
 
-import games from 'games';
-import Game from 'game';
+import games from 'components/games';
+import Game from 'components/game';
 import apiAddPlayer from 'api/game/addPlayer';
 import {anyObject} from 'mock/objects';
-import {MAX_MEMBERS} from 'game';
+import {MAX_MEMBERS} from 'components/game';
 import {TOO_MACH_MEMBERS, GAME_NOT_FOUND} from 'errors';
 
 describe('API game/addPlayer', () => {

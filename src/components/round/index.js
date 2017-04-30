@@ -1,8 +1,8 @@
 // @flow
 
 import {PLAYER_NOT_FOUND, ROUND_STEP_CARD_INCORRECT} from 'errors';
-import {CARD_SPADE_JACK} from 'card';
-import type {Card} from 'card';
+import {CARD_SPADE_JACK} from 'components/card';
+import type {Card} from 'components/card';
 
 export type RoundPlayer = {
     cards: Array<Card>,

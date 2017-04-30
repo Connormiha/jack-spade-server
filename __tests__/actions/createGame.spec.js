@@ -1,6 +1,6 @@
 // @flow
 
-import Game from 'game';
+import Game from 'components/game';
 import createGame from 'actions/createGame';
 
 describe('Actions createGame', () => {

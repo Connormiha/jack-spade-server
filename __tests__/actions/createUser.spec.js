@@ -1,6 +1,6 @@
 // @flow
 
-import User from 'user';
+import User from 'components/user';
 import createUser from 'actions/createUser';
 
 describe('Actions createUser', () => {

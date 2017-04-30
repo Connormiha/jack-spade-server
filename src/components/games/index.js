@@ -1,6 +1,6 @@
 // @flow
 
-import type Game from 'game';
+import type Game from 'components/game';
 
 export class Games {
     _games: Map<string, Game>;
