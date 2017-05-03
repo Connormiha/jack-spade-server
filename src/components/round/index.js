@@ -2,15 +2,20 @@
 
 import {PLAYER_NOT_FOUND, ROUND_STEP_CARD_INCORRECT} from 'errors';
 import {CARD_SPADE_JACK} from 'components/card';
+import {getStrongestCard, isCardBigger} from 'utils/collections';
+
 import type {Card} from 'components/card';
+
+export type PredictionCount = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type RoundPlayer = {
     cards: Array<Card>,
-    id: string
+    +id: string
 };
 
 type RoundPlayerInner = RoundPlayer & {
-    count: number
+    points: number,
+    prediction: PredictionCount
 };
 
 export type RoundInitialParams = {|
@@ -44,15 +49,30 @@ class Round {
     constructor({trumpCard, players, currentOrder}: RoundInitialParams) {
         this._trumpCard = trumpCard;
         this._players = players.map(({id, cards}) => ({
-            id, cards, count: 0
+            id, cards, points: 0, prediction: 0
         }));
 
         this._currentOrder = currentOrder;
         this._currentStepStore = [];
     }
 
-    _calcPoints() {
+    seеPrediction(playerId: string, count: PredictionCount) {
+        const player = this._getPlayerById(playerId);
 
+        player.prediction = count;
+    }
+
+    _calcPoints() {
+        const strongetsCard: Card = this._currentStepStore[0].card;
+        let winnerId: string = this._currentStepStore[0].ownerId;
+
+        for (const roundCard of this._currentStepStore) {
+            winnerId = isCardBigger(strongetsCard, roundCard.card, this._trumpCard) ? winnerId : roundCard.ownerId;
+        }
+
+        const player = this._getPlayerById(winnerId);
+
+        player.points++;
     }
 
     _getPlayerById(): RoundPlayerInner {
@@ -79,7 +99,13 @@ class Round {
 
         if (headCard === CARD_SPADE_JACK) {
             // Should take the strongest trump
-            // this._getStrongetsCard();
+            const strongestCard: Card = getStrongestCard(player.cards, headCard);
+
+            if (strongestCard.suit === this._trumpCard.suit) {
+                return strongestCard === card;
+            } else {
+                return true;
+            }
         } else {
             if (headCard.suit === card.suit) {
                 return true;
@@ -111,6 +137,7 @@ class Round {
             throw new Error(ROUND_STEP_CARD_INCORRECT);
         }
 
+        // Last player made step
         if (this._currentStepStore.length === this._players.length) {
             this._calcPoints();
             this._currentStepStore = [];
