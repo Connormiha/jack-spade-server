@@ -4,6 +4,7 @@ extends:
 - eslint:recommended
 plugins:
 - flowtype
+- jest
 env:
   node: true
   es6: true
