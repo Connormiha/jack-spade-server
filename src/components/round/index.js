@@ -1,6 +1,9 @@
 // @flow
 
-import {WRONG_PLAYER_ORDER, ROUND_STEP_CARD_INCORRECT} from 'errors';
+import {
+    WRONG_PLAYER_ORDER, WRONG_PLAYERS_COUNT, ROUND_STEP_CARD_INCORRECT,
+    ROUND_ALREADY_STARTED, PLAYER_ALREADY_PLACED_A_BET, PLAYER_NOT_FOUND
+} from 'errors';
 import {CARD_SPADE_JACK} from 'components/card';
 import {getStrongestCard, isCardBigger} from 'utils/collections';
 
@@ -40,6 +43,10 @@ type createStepParam = {|
     card: Card
 |};
 
+export const ROUND_STATUS_NOT_READY = 'NOT_READY';
+export const ROUND_STATUS_READY = 'READY';
+export const ROUND_STATUS_FINISHED = 'FINISHED';
+
 export type ROUND_STATUS = 'NOT_READY' | 'READY' | 'FINISHED';
 
 class Round {
@@ -50,6 +57,10 @@ class Round {
     _status: ROUND_STATUS;
 
     constructor({trumpCard, players, currentOrder}: RoundInitialParams) {
+        if (players.length < 2 || players.length > 6) {
+            throw new Error(WRONG_PLAYERS_COUNT);
+        }
+
         this._trumpCard = trumpCard;
         this._players = players.map(({id, cards}) => ({
             id, cards, points: 0, prediction: 0
@@ -57,13 +68,33 @@ class Round {
 
         this._currentOrder = currentOrder;
         this._currentStepStore = [];
-        this._status = 'NOT_READY';
+        this._status = ROUND_STATUS_NOT_READY;
     }
 
     seеPrediction(playerId: string, count: PredictionCount) {
+        if (this._status !== ROUND_STATUS_NOT_READY) {
+            throw new Error(ROUND_ALREADY_STARTED);
+        }
+
         const player = this._getPlayerById(playerId);
 
+        if (player.prediction !== 0) {
+            throw new Error(PLAYER_ALREADY_PLACED_A_BET);
+        }
+
         player.prediction = count;
+        this._validateAllPredictions();
+    }
+
+    _validateAllPredictions() {
+        for (const player of this._players) {
+            if (player.prediction === 0) {
+                // Not everyone 'voted'
+                return;
+            }
+        }
+
+        this._status = ROUND_STATUS_READY;
     }
 
     get status(): ROUND_STATUS {
@@ -83,8 +114,14 @@ class Round {
         player.points++;
     }
 
-    _getPlayerById(): RoundPlayerInner {
-        return this._players[0];
+    _getPlayerById(id: string): RoundPlayerInner {
+        for (const player of this._players) {
+            if (player.id === id) {
+                return player;
+            }
+        }
+
+        throw new Error(PLAYER_NOT_FOUND);
     }
 
     _getCurrentPlayer(): RoundPlayerInner {
