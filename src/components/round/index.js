@@ -1,6 +1,6 @@
 // @flow
 
-import {PLAYER_NOT_FOUND, ROUND_STEP_CARD_INCORRECT} from 'errors';
+import {WRONG_PLAYER_ORDER, ROUND_STEP_CARD_INCORRECT} from 'errors';
 import {CARD_SPADE_JACK} from 'components/card';
 import {getStrongestCard, isCardBigger} from 'utils/collections';
 
@@ -40,11 +40,14 @@ type createStepParam = {|
     card: Card
 |};
 
+export type ROUND_STATUS = 'NOT_READY' | 'READY' | 'FINISHED';
+
 class Round {
     _trumpCard: Card;
     _players: Array<RoundPlayerInner>;
     _currentOrder: number;
     _currentStepStore: Array<RoundDropCard>;
+    _status: ROUND_STATUS;
 
     constructor({trumpCard, players, currentOrder}: RoundInitialParams) {
         this._trumpCard = trumpCard;
@@ -54,12 +57,17 @@ class Round {
 
         this._currentOrder = currentOrder;
         this._currentStepStore = [];
+        this._status = 'NOT_READY';
     }
 
     seеPrediction(playerId: string, count: PredictionCount) {
         const player = this._getPlayerById(playerId);
 
         player.prediction = count;
+    }
+
+    get status(): ROUND_STATUS {
+        return this._status;
     }
 
     _calcPoints() {
@@ -79,6 +87,18 @@ class Round {
         return this._players[0];
     }
 
+    _getCurrentPlayer(): RoundPlayerInner {
+        return this._players[this._currentOrder];
+    }
+
+    _tickOrder() {
+        if (this._currentOrder === this._players.length) {
+            this._currentOrder = 0;
+        } else {
+            this._currentOrder++;
+        }
+    }
+
     _hasPlayer(id: string): boolean {
         for (const item of this._players) {
             if (item.id === id) {
@@ -87,6 +107,10 @@ class Round {
         }
 
         return false;
+    }
+
+    _setFinished() {
+        this._status = 'FINISHED';
     }
 
     _isCorrectStep(playerId: string, card: Card): boolean {
@@ -124,8 +148,10 @@ class Round {
     }
 
     createStep({playerId, stepType, card}: createStepParam) {
-        if (!this._hasPlayer(playerId)) {
-            throw new Error(PLAYER_NOT_FOUND);
+        const player = this._getCurrentPlayer();
+
+        if (playerId !== player.id) {
+            throw new Error(WRONG_PLAYER_ORDER);
         }
 
         if (stepType === ROUND_STEP_TYPE_DEFENSE || this._isCorrectStep(playerId, card)) {
@@ -141,6 +167,9 @@ class Round {
         if (this._currentStepStore.length === this._players.length) {
             this._calcPoints();
             this._currentStepStore = [];
+            this._setFinished();
+        } else {
+            this._tickOrder();
         }
     }
 }

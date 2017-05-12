@@ -2,7 +2,7 @@
 
 const gulp = require('gulp');
 const eslint = require('gulp-eslint');
-const execSync = require('child_process').execSync;
+const {execSync} = require('child_process');
 
 const PRE_COMMIT = process.env.NODE_ENV === 'pre_commit';
 

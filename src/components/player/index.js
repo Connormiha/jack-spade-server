@@ -1,11 +1,12 @@
 // @flow
 
-type id_type = string;
-type init_params = {id: id_type};
+import type {Card} from 'components/card';
+
+type init_params = {id: string};
 
 class Player {
-    _id: id_type;
-    _cards: Set<any>;
+    _id: string;
+    _cards: Set<Card>;
 
     constructor({id}: init_params) {
         this._id = id;
@@ -32,7 +33,7 @@ class Player {
         return this._cards.size;
     }
 
-    get id(): id_type {
+    get id(): string {
         return this._id;
     }
 }
