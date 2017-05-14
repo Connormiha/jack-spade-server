@@ -1,7 +1,7 @@
 // @flow
 
 import games from 'components/games';
-import Player from 'components/Player';
+import Player from 'components/player';
 import {GAME_NOT_FOUND} from 'errors';
 
 import type Game from 'components/game';
