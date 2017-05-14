@@ -156,7 +156,7 @@ class Round {
     }
 
     _tickOrder() {
-        if (this._currentOrder === this._players.length) {
+        if (this._currentOrder === this._countCards - 1) {
             this._currentOrder = 0;
         } else {
             this._currentOrder++;
@@ -181,7 +181,7 @@ class Round {
 
         if (headCard === CARD_SPADE_JACK) {
             // Should take the strongest trump
-            const strongestCard: Card = getStrongestCard(player.cards, headCard);
+            const strongestCard: Card = getStrongestCard(player.cards, this._trumpCard);
 
             if (strongestCard.suit === this._trumpCard.suit) {
                 return strongestCard === card;

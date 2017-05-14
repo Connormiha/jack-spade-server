@@ -251,5 +251,35 @@ describe('Round (class)', () => {
                 {playerId: '2', card: cards.CARD_HEART_10}
             ]);
         });
+
+        it('shouldn\'t allow not trump greatest card', () => {
+            expect(() => {
+                round.createStep({
+                    playerId: '2',
+                    card: cards.CARD_HEART_9
+                });
+            }).toThrowError(ROUND_STEP_CARD_INCORRECT);
+
+            expect(() => {
+                round.createStep({
+                    playerId: '2',
+                    card: cards.CARD_SPADE_KING
+                });
+            }).toThrowError(ROUND_STEP_CARD_INCORRECT);
+
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_HEART_10
+            });
+
+            round.createStep({
+                playerId: '3',
+                card: cards.CARD_CLUB_10
+            });
+
+            const statistic = round.getStatistic();
+
+            expect(statistic.currentOrder).toBe(0);
+        });
     });
 });
