@@ -3,7 +3,8 @@
 import {
     WRONG_PLAYER_ORDER, WRONG_PLAYERS_COUNT, ROUND_STEP_CARD_INCORRECT,
     ROUND_ALREADY_STARTED, PLAYER_ALREADY_PLACED_A_BET, PLAYER_NOT_FOUND,
-    ROUND_WRONG_PREDICTION_COUNT, ROUND_WRONG_PLAYER_CARDS_COUNT, ROUND_STEP_WRONG_STATUS
+    ROUND_WRONG_PREDICTION_COUNT, ROUND_WRONG_PLAYER_CARDS_COUNT, ROUND_STEP_WRONG_STATUS,
+    ROUND_STEP_CARD_NOT_EXIST
 } from 'errors';
 import {CARD_SPADE_JACK} from 'components/card';
 import {getStrongestCard, isCardBigger} from 'utils/collections';
@@ -162,14 +163,8 @@ class Round {
         }
     }
 
-    _hasPlayer(id: string): boolean {
-        for (const item of this._players) {
-            if (item.id === id) {
-                return true;
-            }
-        }
-
-        return false;
+    _hasCard(player: RoundPlayerInner, card: Card): boolean {
+        return player.cards.some((item) => item === card);
     }
 
     _setFinished() {
@@ -221,6 +216,10 @@ class Round {
             throw new Error(WRONG_PLAYER_ORDER);
         }
 
+        if (!this._hasCard(player, card)) {
+            throw new Error(ROUND_STEP_CARD_NOT_EXIST);
+        }
+
         const isAttack = this._attackOrder === this._currentOrder;
 
         if (isAttack || this._isCorrectStep(playerId, card)) {
@@ -237,9 +236,9 @@ class Round {
             this._calcPoints();
             this._currentStepStore = [];
             this._setFinished();
-        } else {
-            this._tickOrder();
         }
+
+        this._tickOrder();
     }
 }
 
