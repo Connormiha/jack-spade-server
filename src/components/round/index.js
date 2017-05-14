@@ -2,14 +2,16 @@
 
 import {
     WRONG_PLAYER_ORDER, WRONG_PLAYERS_COUNT, ROUND_STEP_CARD_INCORRECT,
-    ROUND_ALREADY_STARTED, PLAYER_ALREADY_PLACED_A_BET, PLAYER_NOT_FOUND
+    ROUND_ALREADY_STARTED, PLAYER_ALREADY_PLACED_A_BET, PLAYER_NOT_FOUND,
+    ROUND_WRONG_PREDICTION_COUNT, ROUND_WRONG_PLAYER_CARDS_COUNT, ROUND_STEP_WRONG_STATUS
 } from 'errors';
 import {CARD_SPADE_JACK} from 'components/card';
 import {getStrongestCard, isCardBigger} from 'utils/collections';
 
 import type {Card} from 'components/card';
 
-export type PredictionCount = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type CardsCount = 1 | 2 | 3 | 4 | 5 | 6;
+export type PredictionCount = 0 | CardsCount;
 
 export type RoundPlayer = {
     cards: Array<Card>,
@@ -18,28 +20,24 @@ export type RoundPlayer = {
 
 type RoundPlayerInner = RoundPlayer & {
     points: number,
-    prediction: PredictionCount
+    prediction: PredictionCount,
+    voted: boolean
 };
 
 export type RoundInitialParams = {|
     trumpCard: Card,
     players: Array<RoundPlayer>,
-    currentOrder: number
+    currentOrder: number,
+    cardsCount: CardsCount
 |};
 
-export const ROUND_STEP_TYPE_ATTACK = 'attack';
-export const ROUND_STEP_TYPE_DEFENSE = 'defense';
-
-export type RoundStepType = 'attack' | 'defense';
-
 type RoundDropCard = {|
-    ownerId: string,
+    playerId: string,
     card: Card
 |};
 
 type createStepParam = {|
     playerId: string,
-    stepType: RoundStepType,
     card: Card
 |};
 
@@ -49,26 +47,42 @@ export const ROUND_STATUS_FINISHED = 'FINISHED';
 
 export type ROUND_STATUS = 'NOT_READY' | 'READY' | 'FINISHED';
 
+export type RoundStatistic = {|
+    +players: Array<RoundPlayerInner>,
+    +currentStepStore: Array<RoundDropCard>,
+    +currentOrder: number
+|};
+
 class Round {
     _trumpCard: Card;
     _players: Array<RoundPlayerInner>;
     _currentOrder: number;
+    _attackOrder: number;
     _currentStepStore: Array<RoundDropCard>;
     _status: ROUND_STATUS;
+    _countCards: CardsCount;
 
-    constructor({trumpCard, players, currentOrder}: RoundInitialParams) {
+    constructor({trumpCard, players, currentOrder, cardsCount}: RoundInitialParams) {
         if (players.length < 2 || players.length > 6) {
             throw new Error(WRONG_PLAYERS_COUNT);
         }
 
         this._trumpCard = trumpCard;
-        this._players = players.map(({id, cards}) => ({
-            id, cards, points: 0, prediction: 0
-        }));
+        this._players = players.map(({id, cards}) => {
+            if (cards.length !== cardsCount) {
+                throw new Error(ROUND_WRONG_PLAYER_CARDS_COUNT);
+            }
+
+            return {
+                id, cards, points: 0, prediction: 0, voted: false
+            };
+        });
 
         this._currentOrder = currentOrder;
+        this._attackOrder = currentOrder;
         this._currentStepStore = [];
         this._status = ROUND_STATUS_NOT_READY;
+        this._countCards = cardsCount;
     }
 
     seеPrediction(playerId: string, count: PredictionCount) {
@@ -78,23 +92,35 @@ class Round {
 
         const player = this._getPlayerById(playerId);
 
-        if (player.prediction !== 0) {
+        if (player.voted) {
             throw new Error(PLAYER_ALREADY_PLACED_A_BET);
         }
 
+        if (count < 0 || count > this._countCards) {
+            throw new Error(ROUND_WRONG_PREDICTION_COUNT);
+        }
+
         player.prediction = count;
+        player.voted = true;
         this._validateAllPredictions();
     }
 
-    _validateAllPredictions() {
-        for (const player of this._players) {
-            if (player.prediction === 0) {
-                // Not everyone 'voted'
-                return;
-            }
-        }
+    getStatistic(): RoundStatistic {
+        return {
+            players: this._players,
+            currentOrder: this._currentOrder,
+            currentStepStore: this._currentStepStore
+        };
+    }
 
-        this._status = ROUND_STATUS_READY;
+    /**
+     * Checks votes for all players
+     */
+    _validateAllPredictions() {
+        // Not everyone 'voted'
+        if (this._players.every(({voted}) => voted)) {
+            this._status = ROUND_STATUS_READY;
+        }
     }
 
     get status(): ROUND_STATUS {
@@ -103,10 +129,10 @@ class Round {
 
     _calcPoints() {
         const strongetsCard: Card = this._currentStepStore[0].card;
-        let winnerId: string = this._currentStepStore[0].ownerId;
+        let winnerId: string = this._currentStepStore[0].playerId;
 
         for (const roundCard of this._currentStepStore) {
-            winnerId = isCardBigger(strongetsCard, roundCard.card, this._trumpCard) ? winnerId : roundCard.ownerId;
+            winnerId = isCardBigger(strongetsCard, roundCard.card, this._trumpCard) ? winnerId : roundCard.playerId;
         }
 
         const player = this._getPlayerById(winnerId);
@@ -184,16 +210,22 @@ class Round {
         return false;
     }
 
-    createStep({playerId, stepType, card}: createStepParam) {
+    createStep({playerId, card}: createStepParam) {
+        if (this._status !== ROUND_STATUS_READY) {
+            throw new Error(ROUND_STEP_WRONG_STATUS);
+        }
+
         const player = this._getCurrentPlayer();
 
         if (playerId !== player.id) {
             throw new Error(WRONG_PLAYER_ORDER);
         }
 
-        if (stepType === ROUND_STEP_TYPE_DEFENSE || this._isCorrectStep(playerId, card)) {
+        const isAttack = this._attackOrder === this._currentOrder;
+
+        if (isAttack || this._isCorrectStep(playerId, card)) {
             this._currentStepStore.push({
-                ownerId: playerId,
+                playerId,
                 card
             });
         } else {
