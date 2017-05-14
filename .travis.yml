@@ -1,0 +1,11 @@
+sudo: false
+
+dist: trusty
+
+language: node_js
+
+node_js:
+  - "7"
+
+after_script:
+  - npm run types && npm run lint
