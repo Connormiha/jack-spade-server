@@ -280,6 +280,71 @@ describe('Round (class)', () => {
             const statistic = round.getStatistic();
 
             expect(statistic.currentOrder).toBe(0);
+            expect(statistic.players[0].points).toBe(1);
+            expect(statistic.players[1].points).toBe(0);
+            expect(statistic.players[2].points).toBe(0);
+        });
+    });
+
+    describe('create defense step with trump as attack card', () => {
+        beforeEach(() => {
+            round = new Round({
+                trumpCard: cards.CARD_HEART_7,
+                players: [
+                    {
+                        id: '1',
+                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                    },
+                    {
+                        id: '2',
+                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                    },
+                    {
+                        id: '3',
+                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
+                    }
+                ],
+                currentOrder: 0,
+                cardsCount: 3
+            });
+
+            createPredictions({
+                '1': 2,
+                '2': 0,
+                '3': 0
+            });
+
+            round.createStep({
+                playerId: '1',
+                card: cards.CARD_HEART_QUEEN
+            });
+        });
+
+        it('should allow correct suit card', () => {
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_HEART_10
+            });
+
+            let statistic = round.getStatistic();
+
+            expect(statistic.currentOrder).toBe(2);
+            expect(statistic.currentStepStore).toEqual([
+                {playerId: '1', card: cards.CARD_HEART_QUEEN},
+                {playerId: '2', card: cards.CARD_HEART_10}
+            ]);
+
+            round.createStep({
+                playerId: '3',
+                card: cards.CARD_CLUB_KING
+            });
+
+            statistic = round.getStatistic();
+
+            expect(statistic.currentOrder).toBe(0);
+            expect(statistic.players[0].points).toBe(1);
+            expect(statistic.players[1].points).toBe(0);
+            expect(statistic.players[2].points).toBe(0);
         });
     });
 });
