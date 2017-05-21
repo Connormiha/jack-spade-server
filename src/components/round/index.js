@@ -54,6 +54,8 @@ export type RoundStatistic = {|
     +currentOrder: number
 |};
 
+let id = 1;
+
 class Round {
     _trumpCard: Card;
     _players: Array<RoundPlayerInner>;
@@ -63,6 +65,7 @@ class Round {
     _status: ROUND_STATUS;
     _countCards: CardsCount;
     _currentStepNumber: CardsCount;
+    _id: number;
 
     constructor({trumpCard, players, currentOrder, cardsCount}: RoundInitialParams) {
         if (players.length < 2 || players.length > 6) {
@@ -86,6 +89,8 @@ class Round {
         this._status = ROUND_STATUS_NOT_READY;
         this._countCards = cardsCount;
         this._currentStepNumber = 1;
+        this._id = id;
+        id++;
     }
 
     seеPrediction(playerId: string, count: PredictionCount) {
@@ -124,6 +129,10 @@ class Round {
         if (this._players.every(({voted}) => voted)) {
             this._status = ROUND_STATUS_READY;
         }
+    }
+
+    get id(): number {
+        return this._id;
     }
 
     get status(): ROUND_STATUS {
