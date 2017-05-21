@@ -62,6 +62,7 @@ class Round {
     _currentStepStore: Array<RoundDropCard>;
     _status: ROUND_STATUS;
     _countCards: CardsCount;
+    _currentStepNumber: CardsCount;
 
     constructor({trumpCard, players, currentOrder, cardsCount}: RoundInitialParams) {
         if (players.length < 2 || players.length > 6) {
@@ -84,6 +85,7 @@ class Round {
         this._currentStepStore = [];
         this._status = ROUND_STATUS_NOT_READY;
         this._countCards = cardsCount;
+        this._currentStepNumber = 1;
     }
 
     seеPrediction(playerId: string, count: PredictionCount) {
@@ -139,6 +141,8 @@ class Round {
         const player = this._getPlayerById(winnerId);
 
         player.points++;
+        this._currentOrder = this._players.indexOf(player);
+        this._attackOrder = this._currentOrder;
     }
 
     _getPlayerById(id: string): RoundPlayerInner {
@@ -227,6 +231,8 @@ class Round {
                 playerId,
                 card
             });
+
+            player.cards = player.cards.filter((item) => item !== card);
         } else {
             throw new Error(ROUND_STEP_CARD_INCORRECT);
         }
@@ -235,10 +241,15 @@ class Round {
         if (this._currentStepStore.length === this._players.length) {
             this._calcPoints();
             this._currentStepStore = [];
-            this._setFinished();
-        }
 
-        this._tickOrder();
+            if (this._currentStepNumber === this._countCards) {
+                this._setFinished();
+            } else {
+                this._currentStepNumber++;
+            }
+        } else {
+            this._tickOrder();
+        }
     }
 }
 

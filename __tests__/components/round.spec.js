@@ -342,9 +342,127 @@ describe('Round (class)', () => {
             statistic = round.getStatistic();
 
             expect(statistic.currentOrder).toBe(0);
+            expect(round.status).toBe(ROUND_STATUS_READY);
             expect(statistic.players[0].points).toBe(1);
             expect(statistic.players[1].points).toBe(0);
             expect(statistic.players[2].points).toBe(0);
+        });
+    });
+
+    describe('full round', () => {
+        beforeEach(() => {
+            round = new Round({
+                trumpCard: cards.CARD_HEART_7,
+                players: [
+                    {
+                        id: '1',
+                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                    },
+                    {
+                        id: '2',
+                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                    },
+                    {
+                        id: '3',
+                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
+                    }
+                ],
+                currentOrder: 2,
+                cardsCount: 3
+            });
+
+            createPredictions({
+                '1': 2,
+                '2': 0,
+                '3': 0
+            });
+        });
+
+        it('should work all round with correct steps', () => {
+            round.createStep({
+                playerId: '3',
+                card: cards.CARD_CLUB_10
+            });
+
+            round.createStep({
+                playerId: '1',
+                card: cards.CARD_HEART_QUEEN
+            });
+
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_SPADE_KING
+            });
+
+            // Player: 1 won
+            round.createStep({
+                playerId: '1',
+                card: cards.CARD_HEART_ACE
+            });
+
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_HEART_9
+            });
+
+            round.createStep({
+                playerId: '3',
+                card: cards.CARD_CLUB_KING
+            });
+
+            // 'Player 1' won
+            round.createStep({
+                playerId: '1',
+                card: cards.CARD_SPADE_JACK
+            });
+
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_HEART_10
+            });
+
+            round.createStep({
+                playerId: '3',
+                card: cards.CARD_CLUB_9
+            });
+
+            const statistic = round.getStatistic();
+
+            expect(statistic.players[0].points).toBe(3);
+            expect(statistic.players[1].points).toBe(0);
+            expect(statistic.players[2].points).toBe(0);
+        });
+
+        it('shouldn\'t allow use old cards', () => {
+            round.createStep({
+                playerId: '3',
+                card: cards.CARD_CLUB_10
+            });
+
+            round.createStep({
+                playerId: '1',
+                card: cards.CARD_HEART_QUEEN
+            });
+
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_SPADE_KING
+            });
+
+            // 'Player 1' won
+            expect(() => {
+                round.createStep({
+                    playerId: '1',
+                    card: cards.CARD_HEART_QUEEN
+                });
+            }).toThrowError(ROUND_STEP_CARD_NOT_EXIST);
+
+            expect(() => {
+                round.createStep({
+                    playerId: '2',
+                    card: cards.CARD_SPADE_KING
+                });
+            }).toThrowError(WRONG_PLAYER_ORDER);
         });
     });
 });
