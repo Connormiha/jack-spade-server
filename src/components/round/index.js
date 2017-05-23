@@ -11,8 +11,7 @@ import {getStrongestCard, isCardBigger} from 'utils/collections';
 
 import type {Card} from 'components/card';
 
-export type CardsCount = 1 | 2 | 3 | 4 | 5 | 6;
-export type PredictionCount = 0 | CardsCount;
+export type PredictionCount = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type RoundPlayer = {
     cards: Array<Card>,
@@ -29,7 +28,7 @@ export type RoundInitialParams = {|
     trumpCard: Card,
     players: Array<RoundPlayer>,
     currentOrder: number,
-    cardsCount: CardsCount
+    cardsCount: number
 |};
 
 type RoundDropCard = {|
@@ -63,8 +62,8 @@ class Round {
     _attackOrder: number;
     _currentStepStore: Array<RoundDropCard>;
     _status: ROUND_STATUS;
-    _countCards: CardsCount;
-    _currentStepNumber: CardsCount;
+    _countCards: number;
+    _currentStepNumber: number;
     _id: number;
 
     constructor({trumpCard, players, currentOrder, cardsCount}: RoundInitialParams) {
