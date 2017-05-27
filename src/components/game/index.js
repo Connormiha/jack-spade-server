@@ -1,6 +1,8 @@
 // @flow
 
-import {TOO_MACH_MEMBERS, TOO_FEW_MEMBERS} from 'errors';
+import {
+    TOO_MACH_MEMBERS, TOO_FEW_MEMBERS, GAME_PLAYER_ALREADY_EXIST
+} from 'errors';
 import type Player from 'components/player';
 import Round from 'components/round';
 import {getRandomCards} from 'utils/collections';
@@ -11,6 +13,7 @@ export const COUNT_ROUNDS = 13;
 
 type init_params = {id: string};
 type roundNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
+type gameStatus = 'WAITING_FOR_PLAYERS' | 'IN_PROGRESS' | 'FINISHED';
 
 class Game {
     _id: string;
@@ -18,6 +21,7 @@ class Game {
     _players: Array<Player>;
     _currentRound: Round;
     _currentRoundNumber: roundNumber;
+    _status: gameStatus;
 
     constructor({id}: init_params) {
         this._id = id;
@@ -25,7 +29,11 @@ class Game {
         this._currentRoundNumber = 1;
     }
 
-    join(player: Player): void {
+    joinPlayer(player: Player): void {
+        if (this._hasPlayer(player.id)) {
+            throw new Error(GAME_PLAYER_ALREADY_EXIST);
+        }
+
         if (this.countMembers === MAX_MEMBERS) {
             throw new Error(TOO_MACH_MEMBERS);
         }
@@ -35,6 +43,10 @@ class Game {
         if (this.countMembers === 1) {
             this._mainPlayerId = player.id;
         }
+    }
+
+    _hasPlayer(id: string): boolean {
+        return this._players.some((item) => item.id === id);
     }
 
     setRound(round: Round) {

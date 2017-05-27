@@ -27,7 +27,7 @@
     "eslint": "3.19.0",
     "eslint-plugin-flowtype": "2.33.0",
     "eslint-plugin-jest": "20.0.3",
-    "flow-bin": "0.46.0",
+    "flow-bin": "0.47.0",
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
     "husky": "0.13.3",

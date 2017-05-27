@@ -19,7 +19,7 @@ const addPlayer = (gameId: string): Player => {
 
     const player: Player = new Player({id: String(id)});
 
-    game.join(player);
+    game.joinPlayer(player);
 
     return player;
 };
