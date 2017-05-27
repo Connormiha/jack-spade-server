@@ -11,9 +11,13 @@ export const MAX_MEMBERS = 6;
 
 export const COUNT_ROUNDS = 13;
 
+export const GAME_STATUS_WAITING = 'WAITING';
+export const GAME_STATUS_IN_PROGRESS = 'IN_PROGRESS';
+export const GAME_STATUS_FINISHED = 'FINISHED';
+
 type init_params = {id: string};
 type roundNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
-type gameStatus = 'WAITING_FOR_PLAYERS' | 'IN_PROGRESS' | 'FINISHED';
+type gameStatus = 'WAITING' | 'IN_PROGRESS' | 'FINISHED';
 
 class Game {
     _id: string;
@@ -27,6 +31,7 @@ class Game {
         this._id = id;
         this._players = [];
         this._currentRoundNumber = 1;
+        this._status = GAME_STATUS_WAITING;
     }
 
     joinPlayer(player: Player): void {
@@ -53,7 +58,7 @@ class Game {
         this._currentRound = round;
     }
 
-    startGame() {
+    nextRound() {
         if (this.countMembers < 2) {
             throw new Error(TOO_FEW_MEMBERS);
         }
@@ -78,6 +83,8 @@ class Game {
             currentOrder: 0,
             trumpCard: getRandomCards(1, cardsCount === 6 ? [] : exceptedCards)[0]
         });
+
+        this._status = GAME_STATUS_IN_PROGRESS;
     }
 
     get cardsCount(): number {
@@ -90,6 +97,10 @@ class Game {
 
     get id(): string {
         return this._id;
+    }
+
+    get status(): gameStatus {
+        return this._status;
     }
 
     get countMembers(): number {
