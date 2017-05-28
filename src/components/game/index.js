@@ -1,10 +1,13 @@
 // @flow
 
 import {
-    TOO_MACH_MEMBERS, TOO_FEW_MEMBERS, GAME_PLAYER_ALREADY_EXIST
+    TOO_MACH_MEMBERS, TOO_FEW_MEMBERS, GAME_PLAYER_ALREADY_EXIST,
+    GAME_CURRENT_ROUND_NOT_FINISHED, GAME_IS_FINISHED
 } from 'errors';
 import type Player from 'components/player';
-import Round from 'components/round';
+import Round, {
+    ROUND_STATUS_FINISHED
+} from 'components/round';
 import {getRandomCards} from 'utils/collections';
 
 export const MAX_MEMBERS = 6;
@@ -59,6 +62,14 @@ class Game {
     }
 
     nextRound() {
+        if (this._status === GAME_STATUS_FINISHED) {
+            throw new Error(GAME_IS_FINISHED);
+        }
+
+        if (this._currentRound && this._currentRound.status !== ROUND_STATUS_FINISHED) {
+            throw new Error(GAME_CURRENT_ROUND_NOT_FINISHED);
+        }
+
         if (this.countMembers < 2) {
             throw new Error(TOO_FEW_MEMBERS);
         }
@@ -85,6 +96,10 @@ class Game {
         });
 
         this._status = GAME_STATUS_IN_PROGRESS;
+    }
+
+    get roundNumber(): roundNumber {
+        return this._currentRoundNumber;
     }
 
     get cardsCount(): number {

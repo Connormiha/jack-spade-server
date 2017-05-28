@@ -1,7 +1,8 @@
 // @flow
 
 import {
-    TOO_MACH_MEMBERS, GAME_PLAYER_ALREADY_EXIST, TOO_FEW_MEMBERS
+    TOO_MACH_MEMBERS, GAME_PLAYER_ALREADY_EXIST, TOO_FEW_MEMBERS,
+    GAME_CURRENT_ROUND_NOT_FINISHED
 } from 'errors';
 import Game, {
     MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS
@@ -48,7 +49,7 @@ describe('Game (class)', () => {
     });
 });
 
-describe('Game (class) startGame', () => {
+describe('Game (class) start round', () => {
     let game: Game;
     let player1: Player;
     let player2: Player;
@@ -79,5 +80,17 @@ describe('Game (class) startGame', () => {
 
         game.nextRound();
         expect(game.status).toBe(GAME_STATUS_IN_PROGRESS);
+        expect(game.roundNumber).toBe(1);
+    });
+
+    it('shouldn\'t start when current round is not finished', () => {
+        game.joinPlayer(player1);
+        game.joinPlayer(player2);
+
+        game.nextRound();
+
+        expect(() => {
+            game.nextRound();
+        }).toThrowError(GAME_CURRENT_ROUND_NOT_FINISHED);
     });
 });

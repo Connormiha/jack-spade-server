@@ -180,7 +180,7 @@ class Round {
     }
 
     _setFinished() {
-        this._status = 'FINISHED';
+        this._status = ROUND_STATUS_FINISHED;
     }
 
     _isCorrectStep(playerId: string, card: Card): boolean {
