@@ -24,11 +24,23 @@ type RoundPlayerInner = RoundPlayer & {
     voted: boolean
 };
 
+export type TypeRoundStoreBackup = {|
+    trumpCard: Card;
+    players: Array<RoundPlayerInner>;
+    currentOrder: number;
+    attackOrder: number;
+    currentStepStore: Array<RoundDropCard>;
+    status: ROUND_STATUS;
+    countCards: number;
+    currentStepNumber: number;
+    id: number;
+|};
+
 export type RoundInitialParams = {|
     trumpCard: Card,
     players: Array<RoundPlayer>,
     currentOrder: number,
-    cardsCount: number
+    cardsCount: number,
 |};
 
 type RoundDropCard = {|
@@ -66,7 +78,13 @@ class Round {
     _currentStepNumber: number;
     _id: number;
 
-    constructor({trumpCard, players, currentOrder, cardsCount}: RoundInitialParams) {
+    constructor(params?: RoundInitialParams) {
+        if (params) {
+            this._create(params);
+        }
+    }
+
+    _create({trumpCard, players, currentOrder, cardsCount}: RoundInitialParams) {
         if (players.length < 2 || players.length > 6) {
             throw new Error(WRONG_PLAYERS_COUNT);
         }
@@ -90,6 +108,18 @@ class Round {
         this._currentStepNumber = 1;
         this._id = id;
         id++;
+    }
+
+    restore(params: TypeRoundStoreBackup) {
+        this._trumpCard = params.trumpCard;
+        this._players = params.players;
+        this._currentOrder = params.currentOrder;
+        this._attackOrder = params.attackOrder;
+        this._currentStepStore = params.currentStepStore;
+        this._status = params.status;
+        this._countCards = params.countCards;
+        this._currentStepNumber = params.currentStepNumber;
+        this._id = params.id;
     }
 
     seеPrediction(playerId: string, count: PredictionCount) {

@@ -18,7 +18,9 @@ export const GAME_STATUS_WAITING = 'WAITING';
 export const GAME_STATUS_IN_PROGRESS = 'IN_PROGRESS';
 export const GAME_STATUS_FINISHED = 'FINISHED';
 
-type init_params = {id: string};
+type init_params = {
+    id: string
+};
 type roundNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 type gameStatus = 'WAITING' | 'IN_PROGRESS' | 'FINISHED';
 
