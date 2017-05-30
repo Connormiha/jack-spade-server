@@ -24,7 +24,7 @@ type RoundPlayerInner = RoundPlayer & {
     voted: boolean
 };
 
-export type TypeRoundStoreBackup = {|
+export type TypeRoundStoreSnapshot = {|
     trumpCard: Card;
     players: Array<RoundPlayerInner>;
     currentOrder: number;
@@ -40,7 +40,7 @@ export type RoundInitialParams = {|
     trumpCard: Card,
     players: Array<RoundPlayer>,
     currentOrder: number,
-    cardsCount: number,
+    countCards: number,
 |};
 
 type RoundDropCard = {|
@@ -84,14 +84,14 @@ class Round {
         }
     }
 
-    _create({trumpCard, players, currentOrder, cardsCount}: RoundInitialParams) {
+    _create({trumpCard, players, currentOrder, countCards}: RoundInitialParams) {
         if (players.length < 2 || players.length > 6) {
             throw new Error(WRONG_PLAYERS_COUNT);
         }
 
         this._trumpCard = trumpCard;
         this._players = players.map(({id, cards}) => {
-            if (cards.length !== cardsCount) {
+            if (cards.length !== countCards) {
                 throw new Error(ROUND_WRONG_PLAYER_CARDS_COUNT);
             }
 
@@ -104,13 +104,13 @@ class Round {
         this._attackOrder = currentOrder;
         this._currentStepStore = [];
         this._status = ROUND_STATUS_NOT_READY;
-        this._countCards = cardsCount;
+        this._countCards = countCards;
         this._currentStepNumber = 1;
         this._id = id;
         id++;
     }
 
-    restore(params: TypeRoundStoreBackup) {
+    restore(params: TypeRoundStoreSnapshot) {
         this._trumpCard = params.trumpCard;
         this._players = params.players;
         this._currentOrder = params.currentOrder;
@@ -120,6 +120,20 @@ class Round {
         this._countCards = params.countCards;
         this._currentStepNumber = params.currentStepNumber;
         this._id = params.id;
+    }
+
+    getSnapshot(): TypeRoundStoreSnapshot {
+        return {
+            trumpCard: this._trumpCard,
+            players: this._players,
+            currentOrder: this._currentOrder,
+            attackOrder: this._attackOrder,
+            currentStepStore: this._currentStepStore,
+            status: this._status,
+            countCards: this._countCards,
+            currentStepNumber: this._currentStepNumber,
+            id: this._id
+        };
     }
 
     seеPrediction(playerId: string, count: PredictionCount) {

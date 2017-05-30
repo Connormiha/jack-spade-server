@@ -77,10 +77,10 @@ class Game {
         }
 
         let exceptedCards = [];
-        const cardsCount: number = this.cardsCount;
+        const countCards: number = this.countCards;
 
         const players = this._players.map(({id}) => {
-            const cards = getRandomCards(cardsCount, exceptedCards);
+            const cards = getRandomCards(countCards, exceptedCards);
 
             exceptedCards = exceptedCards.concat(cards);
 
@@ -92,9 +92,9 @@ class Game {
 
         this._currentRound = new Round({
             players,
-            cardsCount,
+            countCards,
             currentOrder: 0,
-            trumpCard: getRandomCards(1, cardsCount === 6 ? [] : exceptedCards)[0]
+            trumpCard: getRandomCards(1, countCards === 6 ? [] : exceptedCards)[0]
         });
 
         this._status = GAME_STATUS_IN_PROGRESS;
@@ -104,7 +104,7 @@ class Game {
         return this._currentRoundNumber;
     }
 
-    get cardsCount(): number {
+    get countCards(): number {
         if (this._currentRoundNumber < 7) {
             return this._currentRoundNumber;
         }

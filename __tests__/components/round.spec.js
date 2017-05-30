@@ -4,6 +4,7 @@ import Round from 'components/round';
 import {
     ROUND_STATUS_NOT_READY, ROUND_STATUS_READY
 } from 'components/round';
+import type {TypeRoundStoreSnapshot} from 'components/round';
 import * as cards from 'components/card';
 import {
     PLAYER_ALREADY_PLACED_A_BET, ROUND_WRONG_PLAYER_CARDS_COUNT, WRONG_PLAYER_ORDER,
@@ -41,7 +42,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            cardsCount: 3
+            countCards: 3
         });
 
         expect(round.status).toBe(ROUND_STATUS_NOT_READY);
@@ -52,7 +53,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            cardsCount: 3
+            countCards: 3
         });
 
         round.seеPrediction('1', 1);
@@ -69,7 +70,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            cardsCount: 3
+            countCards: 3
         });
 
         round.seеPrediction('1', 1);
@@ -78,13 +79,13 @@ describe('Round (class)', () => {
         expect(() => round.seеPrediction('1', 0)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
     });
 
-    it('should raise error on wrong cardsCount', () => {
+    it('should raise error on wrong countCards', () => {
         expect(() => {
             new Round({
                 trumpCard: cards.CARD_SPADE_10,
                 players: mockInitialPlayers,
                 currentOrder: 0,
-                cardsCount: 1
+                countCards: 1
             });
         }).toThrowError(ROUND_WRONG_PLAYER_CARDS_COUNT);
     });
@@ -95,7 +96,7 @@ describe('Round (class)', () => {
                 trumpCard: cards.CARD_SPADE_10,
                 players: mockInitialPlayers,
                 currentOrder: 0,
-                cardsCount: 3
+                countCards: 3
             });
         });
 
@@ -222,7 +223,7 @@ describe('Round (class)', () => {
                     }
                 ],
                 currentOrder: 0,
-                cardsCount: 3
+                countCards: 3
             });
 
             createPredictions({
@@ -305,7 +306,7 @@ describe('Round (class)', () => {
                     }
                 ],
                 currentOrder: 0,
-                cardsCount: 3
+                countCards: 3
             });
 
             createPredictions({
@@ -368,7 +369,7 @@ describe('Round (class)', () => {
                     }
                 ],
                 currentOrder: 2,
-                cardsCount: 3
+                countCards: 3
             });
 
             createPredictions({
@@ -464,5 +465,53 @@ describe('Round (class)', () => {
                 });
             }).toThrowError(WRONG_PLAYER_ORDER);
         });
+    });
+});
+
+describe('Round (class) restore game', () => {
+    it('should work getSpapshot', () => {
+        round = new Round({
+            trumpCard: cards.CARD_HEART_7,
+            players: [
+                {
+                    id: '1',
+                    cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                },
+                {
+                    id: '2',
+                    cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                },
+                {
+                    id: '3',
+                    cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
+                }
+            ],
+            currentOrder: 2,
+            countCards: 3
+        });
+
+        createPredictions({
+            '1': 2,
+            '2': 0,
+            '3': 0
+        });
+
+        round.createStep({
+            playerId: '3',
+            card: cards.CARD_CLUB_10
+        });
+
+        round.createStep({
+            playerId: '1',
+            card: cards.CARD_HEART_QUEEN
+        });
+
+        const snapshot: TypeRoundStoreSnapshot = round.getSnapshot();
+
+        expect(snapshot.trumpCard).toBe(cards.CARD_HEART_7);
+        expect(snapshot.id).toBe(round.id);
+        expect(snapshot.status).toBe(round.status);
+        expect(snapshot.status).toBe(ROUND_STATUS_READY);
+        expect(snapshot.countCards).toBe(3);
     });
 });
