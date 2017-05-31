@@ -11,6 +11,8 @@ import {
     ROUND_STEP_WRONG_STATUS, ROUND_STEP_CARD_NOT_EXIST, ROUND_STEP_CARD_INCORRECT
 } from 'errors';
 
+import pick from 'lodash/pick';
+
 const mockInitialPlayers = [
     {
         id: '1',
@@ -513,5 +515,31 @@ describe('Round (class) restore game', () => {
         expect(snapshot.status).toBe(round.status);
         expect(snapshot.status).toBe(ROUND_STATUS_READY);
         expect(snapshot.countCards).toBe(3);
+        expect(snapshot.currentStepNumber).toBe(1);
+        expect(snapshot.attackOrder).toBe(2);
+        expect(snapshot.currentOrder).toBe(1);
+        expect(
+            snapshot.players
+                .map((item) => pick(item, ['points', 'prediction', 'id', 'voted']))
+        ).toEqual([
+            {
+                points: 0,
+                prediction: 2,
+                id: '1',
+                voted: true
+            },
+            {
+                points: 0,
+                prediction: 0,
+                id: '2',
+                voted: true
+            },
+            {
+                points: 0,
+                prediction: 0,
+                id: '3',
+                voted: true
+            }
+        ]);
     });
 });
