@@ -24,6 +24,11 @@ type RoundPlayerInner = RoundPlayer & {
     voted: boolean
 };
 
+type RoundDropCard = {|
+    playerId: string,
+    card: Card
+|};
+
 export type TypeRoundStoreSnapshot = {|
     trumpCard: Card;
     players: Array<RoundPlayerInner>;
@@ -41,11 +46,6 @@ export type RoundInitialParams = {|
     players: Array<RoundPlayer>,
     currentOrder: number,
     countCards: number,
-|};
-
-type RoundDropCard = {|
-    playerId: string,
-    card: Card
 |};
 
 type createStepParam = {|
@@ -136,7 +136,7 @@ class Round {
         };
     }
 
-    seеPrediction(playerId: string, count: PredictionCount) {
+    setPrediction(playerId: string, count: PredictionCount) {
         if (this._status !== ROUND_STATUS_NOT_READY) {
             throw new Error(ROUND_ALREADY_STARTED);
         }

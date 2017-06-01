@@ -33,7 +33,7 @@ let round;
 const createPredictions = (predictions: any) => {
     for (const key in predictions) {
         if (predictions.hasOwnProperty(key)) {
-            round.seеPrediction(key, predictions[key]);
+            round.setPrediction(key, predictions[key]);
         }
     }
 };
@@ -58,11 +58,11 @@ describe('Round (class)', () => {
             countCards: 3
         });
 
-        round.seеPrediction('1', 1);
+        round.setPrediction('1', 1);
         expect(round.status).toBe(ROUND_STATUS_NOT_READY);
-        round.seеPrediction('2', 0);
+        round.setPrediction('2', 0);
         expect(round.status).toBe(ROUND_STATUS_NOT_READY);
-        round.seеPrediction('3', 1);
+        round.setPrediction('3', 1);
 
         expect(round.status).toBe(ROUND_STATUS_READY);
     });
@@ -75,10 +75,10 @@ describe('Round (class)', () => {
             countCards: 3
         });
 
-        round.seеPrediction('1', 1);
+        round.setPrediction('1', 1);
 
-        expect(() => round.seеPrediction('1', 1)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
-        expect(() => round.seеPrediction('1', 0)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
+        expect(() => round.setPrediction('1', 1)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
+        expect(() => round.setPrediction('1', 0)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
     });
 
     it('should raise error on wrong countCards', () => {
@@ -471,7 +471,7 @@ describe('Round (class)', () => {
 });
 
 describe('Round (class) restore game', () => {
-    it('should work getSpapshot', () => {
+    beforeEach(() => {
         round = new Round({
             trumpCard: cards.CARD_HEART_7,
             players: [
@@ -507,7 +507,9 @@ describe('Round (class) restore game', () => {
             playerId: '1',
             card: cards.CARD_HEART_QUEEN
         });
+    });
 
+    it('should work getSpapshot', () => {
         const snapshot: TypeRoundStoreSnapshot = round.getSnapshot();
 
         expect(snapshot.trumpCard).toBe(cards.CARD_HEART_7);
@@ -541,5 +543,25 @@ describe('Round (class) restore game', () => {
                 voted: true
             }
         ]);
+        expect(snapshot.currentStepStore).toEqual([
+            {
+                playerId: '3',
+                card: cards.CARD_CLUB_10
+            },
+            {
+                playerId: '1',
+                card: cards.CARD_HEART_QUEEN
+            }
+        ]);
+    });
+
+    it('should restore snapshot', () => {
+        const snapshot: TypeRoundStoreSnapshot = round.getSnapshot();
+
+        round = new Round();
+        round.restore(snapshot);
+
+        expect(round.id).toBe(snapshot.id);
+        expect(round.status).toBe(snapshot.status);
     });
 });
