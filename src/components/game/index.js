@@ -8,6 +8,7 @@ import type Player from 'components/player';
 import Round, {
     ROUND_STATUS_FINISHED
 } from 'components/round';
+import type {TypeRoundStoreSnapshot} from 'components/round';
 import {getRandomCards} from 'utils/collections';
 
 export const MAX_MEMBERS = 6;
@@ -23,6 +24,10 @@ type init_params = {
 };
 type roundNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 type gameStatus = 'WAITING' | 'IN_PROGRESS' | 'FINISHED';
+
+export type TypeGameStoreSnapshot = {|
+    currentRound?: TypeRoundStoreSnapshot,
+|};
 
 class Game {
     _id: string;
@@ -57,6 +62,23 @@ class Game {
 
     _hasPlayer(id: string): boolean {
         return this._players.some((item) => item.id === id);
+    }
+
+    getSnapshot(): TypeGameStoreSnapshot {
+        const currentRound = this._currentRound ? this._currentRound.getSnapshot() : void 0;
+
+        return {
+            currentRound
+        };
+    }
+
+    restore(params: TypeGameStoreSnapshot) {
+        if (params.currentRound) {
+            const currentRound = new Round();
+
+            currentRound.restore(params.currentRound);
+            this._currentRound = currentRound;
+        }
     }
 
     setRound(round: Round) {

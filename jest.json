@@ -5,6 +5,7 @@
     "src",
     "__tests__"
   ],
+  "testEnvironment": "node",
   "notify": false,
   "bail": true,
   "collectCoverageFrom": [
