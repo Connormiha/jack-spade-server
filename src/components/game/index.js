@@ -27,6 +27,9 @@ type gameStatus = 'WAITING' | 'IN_PROGRESS' | 'FINISHED';
 
 export type TypeGameStoreSnapshot = {|
     currentRound?: TypeRoundStoreSnapshot,
+    currentRoundNumber: roundNumber,
+    mainPlayerId: string,
+    status: gameStatus
 |};
 
 class Game {
@@ -37,7 +40,13 @@ class Game {
     _currentRoundNumber: roundNumber;
     _status: gameStatus;
 
-    constructor({id}: init_params) {
+    constructor(params?: init_params) {
+        if (params) {
+            this._create(params);
+        }
+    }
+
+    _create({id}: init_params) {
         this._id = id;
         this._players = [];
         this._currentRoundNumber = 1;
@@ -68,7 +77,10 @@ class Game {
         const currentRound = this._currentRound ? this._currentRound.getSnapshot() : void 0;
 
         return {
-            currentRound
+            currentRound,
+            currentRoundNumber: this._currentRoundNumber,
+            mainPlayerId: this._mainPlayerId,
+            status: this._status
         };
     }
 
@@ -79,6 +91,10 @@ class Game {
             currentRound.restore(params.currentRound);
             this._currentRound = currentRound;
         }
+
+        this._currentRoundNumber = params.currentRoundNumber;
+        this._mainPlayerId = params.mainPlayerId;
+        this._status = params.status;
     }
 
     setRound(round: Round) {
