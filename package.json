@@ -14,6 +14,7 @@
   },
   "scripts": {
     "coverage": "jest --coverage --config jest.json",
+    "coverage:open": "npm run coverage && open coverage/lcov-report/index.html",
     "lint": "gulp lint",
     "precommit": "NODE_ENV=pre_commit npm run types && npm run lint",
     "prepush": "npm run lint && npm run types && npm test",

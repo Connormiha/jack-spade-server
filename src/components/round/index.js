@@ -59,12 +59,6 @@ export const ROUND_STATUS_FINISHED = 'FINISHED';
 
 export type ROUND_STATUS = 'NOT_READY' | 'READY' | 'FINISHED';
 
-export type RoundStatistic = {|
-    +players: Array<RoundPlayerInner>,
-    +currentStepStore: Array<RoundDropCard>,
-    +currentOrder: number
-|};
-
 let id = 1;
 
 class Round {
@@ -154,14 +148,6 @@ class Round {
         player.prediction = count;
         player.voted = true;
         this._validateAllPredictions();
-    }
-
-    getStatistic(): RoundStatistic {
-        return {
-            players: this._players,
-            currentOrder: this._currentOrder,
-            currentStepStore: this._currentStepStore
-        };
     }
 
     /**

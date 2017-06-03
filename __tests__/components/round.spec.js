@@ -8,7 +8,8 @@ import type {TypeRoundStoreSnapshot} from 'components/round';
 import * as cards from 'components/card';
 import {
     PLAYER_ALREADY_PLACED_A_BET, ROUND_WRONG_PLAYER_CARDS_COUNT, WRONG_PLAYER_ORDER,
-    ROUND_STEP_WRONG_STATUS, ROUND_STEP_CARD_NOT_EXIST, ROUND_STEP_CARD_INCORRECT
+    ROUND_STEP_WRONG_STATUS, ROUND_STEP_CARD_NOT_EXIST, ROUND_STEP_CARD_INCORRECT,
+    WRONG_PLAYERS_COUNT, ROUND_ALREADY_STARTED, ROUND_WRONG_PREDICTION_COUNT, PLAYER_NOT_FOUND
 } from 'errors';
 
 import pick from 'lodash/pick';
@@ -50,6 +51,36 @@ describe('Round (class)', () => {
         expect(round.status).toBe(ROUND_STATUS_NOT_READY);
     });
 
+    it('should raise error with wrong players count', () => {
+        expect(() => {
+            new Round({
+                trumpCard: cards.CARD_SPADE_10,
+                players: mockInitialPlayers.slice(0, 1),
+                currentOrder: 0,
+                countCards: 3
+            });
+        }).toThrowError(WRONG_PLAYERS_COUNT);
+
+        expect(() => {
+            new Round({
+                trumpCard: cards.CARD_SPADE_10,
+                players: [],
+                currentOrder: 0,
+                countCards: 3
+            });
+        }).toThrowError(WRONG_PLAYERS_COUNT);
+
+        // 7 Players
+        expect(() => {
+            new Round({
+                trumpCard: cards.CARD_SPADE_10,
+                players: [...mockInitialPlayers, ...mockInitialPlayers, ...mockInitialPlayers].slice(0, 7),
+                currentOrder: 0,
+                countCards: 3
+            });
+        }).toThrowError(WRONG_PLAYERS_COUNT);
+    });
+
     it('should status to be ready after all players made prediction', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
@@ -79,6 +110,55 @@ describe('Round (class)', () => {
 
         expect(() => round.setPrediction('1', 1)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
         expect(() => round.setPrediction('1', 0)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
+    });
+
+    it('should raise error on round not in not_ready status', () => {
+        round = new Round({
+            trumpCard: cards.CARD_SPADE_10,
+            players: mockInitialPlayers,
+            currentOrder: 0,
+            countCards: 3
+        });
+
+        round.setPrediction('1', 1);
+        round.setPrediction('2', 1);
+        round.setPrediction('3', 1);
+
+        expect(() => {
+            round.setPrediction('1', 1);
+        }).toThrowError(ROUND_ALREADY_STARTED);
+    });
+
+    it('should raise error on wrong prediction count', () => {
+        round = new Round({
+            trumpCard: cards.CARD_SPADE_10,
+            players: mockInitialPlayers,
+            currentOrder: 0,
+            countCards: 3
+        });
+
+        expect(() => {
+            round.setPrediction('1', 4);
+        }).toThrowError(ROUND_WRONG_PREDICTION_COUNT);
+
+        expect(() => {
+            const prediction: any = -1;
+
+            round.setPrediction('1', prediction);
+        }).toThrowError(ROUND_WRONG_PREDICTION_COUNT);
+    });
+
+    it('should raise error on setPrediction with wrong player id', () => {
+        round = new Round({
+            trumpCard: cards.CARD_SPADE_10,
+            players: mockInitialPlayers,
+            currentOrder: 0,
+            countCards: 3
+        });
+
+        expect(() => {
+            round.setPrediction('100500', 1);
+        }).toThrowError(PLAYER_NOT_FOUND);
     });
 
     it('should raise error on wrong countCards', () => {
@@ -145,10 +225,10 @@ describe('Round (class)', () => {
                 card: cards.CARD_HEART_ACE
             });
 
-            const statistic = round.getStatistic();
+            const snapshot = round.getSnapshot();
 
-            expect(statistic.currentOrder).toBe(1);
-            expect(statistic.currentStepStore).toEqual([{playerId: '1', card: cards.CARD_HEART_ACE}]);
+            expect(snapshot.currentOrder).toBe(1);
+            expect(snapshot.currentStepStore).toEqual([{playerId: '1', card: cards.CARD_HEART_ACE}]);
         });
 
         it('should raise on unexisted card', () => {
@@ -186,10 +266,10 @@ describe('Round (class)', () => {
                     card: cards.CARD_HEART_9
                 });
 
-                const statistic = round.getStatistic();
+                const snapshot = round.getSnapshot();
 
-                expect(statistic.currentOrder).toBe(2);
-                expect(statistic.currentStepStore).toEqual([
+                expect(snapshot.currentOrder).toBe(2);
+                expect(snapshot.currentStepStore).toEqual([
                     {playerId: '1', card: cards.CARD_HEART_ACE},
                     {playerId: '2', card: cards.CARD_HEART_9}
                 ]);
@@ -203,6 +283,76 @@ describe('Round (class)', () => {
                     });
                 }).toThrowError(ROUND_STEP_CARD_INCORRECT);
             });
+        });
+    });
+
+    describe('create defense step with jack spade as defense card', () => {
+        beforeEach(() => {
+            round = new Round({
+                trumpCard: cards.CARD_HEART_7,
+                players: [
+                    {
+                        id: '1',
+                        cards: [cards.CARD_SPADE_10, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                    },
+                    {
+                        id: '2',
+                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                    },
+                    {
+                        id: '3',
+                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
+                    }
+                ],
+                currentOrder: 0,
+                countCards: 3
+            });
+
+            createPredictions({
+                '1': 2,
+                '2': 0,
+                '3': 0
+            });
+        });
+
+        it('should allow jack spade vs simple card', () => {
+            round.createStep({
+                playerId: '1',
+                card: cards.CARD_SPADE_10
+            });
+
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_SPADE_JACK
+            });
+
+            const snapshot = round.getSnapshot();
+
+            expect(snapshot.currentOrder).toBe(2);
+            expect(snapshot.currentStepStore).toEqual([
+                {playerId: '1', card: cards.CARD_SPADE_10},
+                {playerId: '2', card: cards.CARD_SPADE_JACK}
+            ]);
+        });
+
+        it('should allow jack spade vs trump card', () => {
+            round.createStep({
+                playerId: '1',
+                card: cards.CARD_HEART_ACE
+            });
+
+            round.createStep({
+                playerId: '2',
+                card: cards.CARD_SPADE_JACK
+            });
+
+            const snapshot = round.getSnapshot();
+
+            expect(snapshot.currentOrder).toBe(2);
+            expect(snapshot.currentStepStore).toEqual([
+                {playerId: '1', card: cards.CARD_HEART_ACE},
+                {playerId: '2', card: cards.CARD_SPADE_JACK}
+            ]);
         });
     });
 
@@ -246,10 +396,10 @@ describe('Round (class)', () => {
                 card: cards.CARD_HEART_10
             });
 
-            const statistic = round.getStatistic();
+            const snapshot = round.getSnapshot();
 
-            expect(statistic.currentOrder).toBe(2);
-            expect(statistic.currentStepStore).toEqual([
+            expect(snapshot.currentOrder).toBe(2);
+            expect(snapshot.currentStepStore).toEqual([
                 {playerId: '1', card: cards.CARD_SPADE_JACK},
                 {playerId: '2', card: cards.CARD_HEART_10}
             ]);
@@ -280,12 +430,12 @@ describe('Round (class)', () => {
                 card: cards.CARD_CLUB_10
             });
 
-            const statistic = round.getStatistic();
+            const snapshot = round.getSnapshot();
 
-            expect(statistic.currentOrder).toBe(0);
-            expect(statistic.players[0].points).toBe(1);
-            expect(statistic.players[1].points).toBe(0);
-            expect(statistic.players[2].points).toBe(0);
+            expect(snapshot.currentOrder).toBe(0);
+            expect(snapshot.players[0].points).toBe(1);
+            expect(snapshot.players[1].points).toBe(0);
+            expect(snapshot.players[2].points).toBe(0);
         });
     });
 
@@ -329,10 +479,10 @@ describe('Round (class)', () => {
                 card: cards.CARD_HEART_10
             });
 
-            let statistic = round.getStatistic();
+            let snapshot = round.getSnapshot();
 
-            expect(statistic.currentOrder).toBe(2);
-            expect(statistic.currentStepStore).toEqual([
+            expect(snapshot.currentOrder).toBe(2);
+            expect(snapshot.currentStepStore).toEqual([
                 {playerId: '1', card: cards.CARD_HEART_QUEEN},
                 {playerId: '2', card: cards.CARD_HEART_10}
             ]);
@@ -342,13 +492,13 @@ describe('Round (class)', () => {
                 card: cards.CARD_CLUB_KING
             });
 
-            statistic = round.getStatistic();
+            snapshot = round.getSnapshot();
 
-            expect(statistic.currentOrder).toBe(0);
+            expect(snapshot.currentOrder).toBe(0);
             expect(round.status).toBe(ROUND_STATUS_READY);
-            expect(statistic.players[0].points).toBe(1);
-            expect(statistic.players[1].points).toBe(0);
-            expect(statistic.players[2].points).toBe(0);
+            expect(snapshot.players[0].points).toBe(1);
+            expect(snapshot.players[1].points).toBe(0);
+            expect(snapshot.players[2].points).toBe(0);
         });
     });
 
@@ -429,11 +579,11 @@ describe('Round (class)', () => {
                 card: cards.CARD_CLUB_9
             });
 
-            const statistic = round.getStatistic();
+            const snapshot = round.getSnapshot();
 
-            expect(statistic.players[0].points).toBe(3);
-            expect(statistic.players[1].points).toBe(0);
-            expect(statistic.players[2].points).toBe(0);
+            expect(snapshot.players[0].points).toBe(3);
+            expect(snapshot.players[1].points).toBe(0);
+            expect(snapshot.players[2].points).toBe(0);
         });
 
         it('shouldn\'t allow use old cards', () => {
@@ -561,7 +711,8 @@ describe('Round (class) restore game', () => {
         round = new Round();
         round.restore(snapshot);
 
-        expect(round.id).toBe(snapshot.id);
-        expect(round.status).toBe(snapshot.status);
+        expect(snapshot.id).toBe(round.id);
+        expect(snapshot.status).toBe(round.status);
+        expect(snapshot.trumpCard).toBe(cards.CARD_HEART_7);
     });
 });
