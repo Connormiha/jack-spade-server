@@ -32,9 +32,11 @@ class Player {
         };
     }
 
-    restore(params: TypePlayerStoreSnapshot) {
+    restore(params: TypePlayerStoreSnapshot): Player {
         this._id = params.id;
         this._cards = new Set(params.cards);
+
+        return this;
     }
 
     addCard(card: any): void {

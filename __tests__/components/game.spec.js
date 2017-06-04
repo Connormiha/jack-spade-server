@@ -94,3 +94,7 @@ describe('Game (class) start round', () => {
         }).toThrowError(GAME_CURRENT_ROUND_NOT_FINISHED);
     });
 });
+
+describe('Game (class) restore', () => {
+
+});
