@@ -5,10 +5,14 @@ extends:
 plugins:
 - flowtype
 - jest
+overrides:
+- files:
+  - __tests__/**/*.spec.js
+  env:
+    jest: true
 env:
   node: true
   es6: true
-  jest: true
 parserOptions:
   sourceType: module
 rules:
