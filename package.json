@@ -31,7 +31,7 @@
     "flow-bin": "0.49.1",
     "gulp": "3.9.1",
     "gulp-eslint": "4.0.0",
-    "husky": "0.14.1",
+    "husky": "0.14.2",
     "jest": "20.0.4"
   },
   "dependencies": {
