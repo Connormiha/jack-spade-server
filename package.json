@@ -24,11 +24,11 @@
     "upgrade": "yarn upgrade-interactive --exact --latest"
   },
   "devDependencies": {
-    "babel-eslint": "8.0.1",
-    "eslint": "4.8.0",
-    "eslint-plugin-flowtype": "2.38.0",
-    "eslint-plugin-jest": "21.2.0",
-    "flow-bin": "0.56.0",
+    "babel-eslint": "8.0.2",
+    "eslint": "4.11.0",
+    "eslint-plugin-flowtype": "2.39.1",
+    "eslint-plugin-jest": "21.3.2",
+    "flow-bin": "0.59.0",
     "gulp": "3.9.1",
     "gulp-eslint": "4.0.0",
     "husky": "0.14.3",
@@ -40,7 +40,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "body-parser": "1.18.2",
-    "express": "4.16.1",
+    "express": "4.16.2",
     "lodash": "4.17.4"
   }
 }
