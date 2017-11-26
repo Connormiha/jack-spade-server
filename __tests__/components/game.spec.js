@@ -3,6 +3,7 @@
 import {
     TOO_MACH_MEMBERS, GAME_PLAYER_ALREADY_EXIST, TOO_FEW_MEMBERS,
     GAME_CURRENT_ROUND_NOT_FINISHED, ROUND_WRONG_PREDICTION_ORDER_PLAYER,
+    ROUND_ALREADY_STARTED,
 } from 'errors';
 import Game, {
     MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS
@@ -176,6 +177,22 @@ describe('Game (class) setPrediction', () => {
             count: 1,
             roundId: game.roundId,
         });
+
+        expect(() => {
+            game.setPrediction({
+                playerId: '1',
+                count: 1,
+                roundId: game.roundId,
+            });
+        }).toThrowError(ROUND_ALREADY_STARTED);
+
+        expect(() => {
+            game.setPrediction({
+                playerId: '2',
+                count: 1,
+                roundId: game.roundId,
+            });
+        }).toThrowError(ROUND_ALREADY_STARTED);
     });
 });
 

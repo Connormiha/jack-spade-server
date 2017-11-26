@@ -208,7 +208,7 @@ class Round {
     }
 
     _tickOrder() {
-        if (this._currentOrder === this._countCards - 1) {
+        if (this._currentOrder === this._players.length - 1) {
             this._currentOrder = 0;
         } else {
             this._currentOrder++;
@@ -216,7 +216,7 @@ class Round {
     }
 
     _tickPredictionOrder() {
-        if (this._currentPredictionOrder === this._countCards - 1) {
+        if (this._currentPredictionOrder === this._players.length - 1) {
             this._currentPredictionOrder = 0;
         } else {
             this._currentPredictionOrder++;
