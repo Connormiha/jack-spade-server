@@ -9,10 +9,13 @@ import * as cards from 'components/card';
 import {
     PLAYER_ALREADY_PLACED_A_BET, ROUND_WRONG_PLAYER_CARDS_COUNT, WRONG_PLAYER_ORDER,
     ROUND_STEP_WRONG_STATUS, ROUND_STEP_CARD_NOT_EXIST, ROUND_STEP_CARD_INCORRECT,
-    WRONG_PLAYERS_COUNT, ROUND_ALREADY_STARTED, ROUND_WRONG_PREDICTION_COUNT, PLAYER_NOT_FOUND
+    WRONG_PLAYERS_COUNT, ROUND_ALREADY_STARTED, ROUND_WRONG_PREDICTION_COUNT, PLAYER_NOT_FOUND,
+    ROUND_WRONG_PREDICTION_ORDER_PLAYER,
 } from 'errors';
 
 import pick from 'lodash/pick';
+
+import type {PredictionCount} from 'components/round';
 
 const mockInitialPlayers = [
     {
@@ -31,11 +34,14 @@ const mockInitialPlayers = [
 
 let round;
 
-const createPredictions = (predictions: any) => {
-    for (const key in predictions) {
-        if (predictions.hasOwnProperty(key)) {
-            round.setPrediction(key, predictions[key]);
-        }
+type PredictionShort = {
+    id: string,
+    count: PredictionCount,
+};
+
+const createPredictions = (predictions: PredictionShort[]) => {
+    for (const item of predictions) {
+        round.setPrediction(item.id, item.count);
     }
 };
 
@@ -110,6 +116,18 @@ describe('Round (class)', () => {
 
         expect(() => round.setPrediction('1', 1)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
         expect(() => round.setPrediction('1', 0)).toThrowError(PLAYER_ALREADY_PLACED_A_BET);
+    });
+
+    it('should raise error on wrong prediction player', () => {
+        round = new Round({
+            trumpCard: cards.CARD_SPADE_10,
+            players: mockInitialPlayers,
+            currentOrder: 0,
+            countCards: 3
+        });
+
+        expect(() => round.setPrediction('2', 1)).toThrowError(ROUND_WRONG_PREDICTION_ORDER_PLAYER);
+        expect(() => round.setPrediction('3', 0)).toThrowError(ROUND_WRONG_PREDICTION_ORDER_PLAYER);
     });
 
     it('should raise error on round not in not_ready status', () => {
@@ -192,11 +210,11 @@ describe('Round (class)', () => {
         });
 
         it('should raise on wrond player', () => {
-            createPredictions({
-                '1': 2,
-                '2': 0,
-                '3': 3
-            });
+            createPredictions([
+                {id: '1', count: 2},
+                {id: '2', count: 0},
+                {id: '3', count: 3},
+            ]);
 
             expect(() => {
                 round.createStep({
@@ -214,11 +232,11 @@ describe('Round (class)', () => {
         });
 
         it('should create attack step', () => {
-            createPredictions({
-                '1': 2,
-                '2': 0,
-                '3': 3
-            });
+            createPredictions([
+                {id: '1', count: 2},
+                {id: '2', count: 0},
+                {id: '3', count: 3},
+            ]);
 
             round.createStep({
                 playerId: '1',
@@ -232,11 +250,11 @@ describe('Round (class)', () => {
         });
 
         it('should raise on unexisted card', () => {
-            createPredictions({
-                '1': 2,
-                '2': 0,
-                '3': 3
-            });
+            createPredictions([
+                {id: '1', count: 2},
+                {id: '2', count: 0},
+                {id: '3', count: 3},
+            ]);
 
             expect(() => {
                 round.createStep({
@@ -248,11 +266,11 @@ describe('Round (class)', () => {
 
         describe('defense step' , () => {
             beforeEach(() => {
-                createPredictions({
-                    '1': 2,
-                    '2': 0,
-                    '3': 3
-                });
+                createPredictions([
+                    {id: '1', count: 2},
+                    {id: '2', count: 0},
+                    {id: '3', count: 3},
+                ]);
 
                 round.createStep({
                     playerId: '1',
@@ -308,11 +326,11 @@ describe('Round (class)', () => {
                 countCards: 3
             });
 
-            createPredictions({
-                '1': 2,
-                '2': 0,
-                '3': 0
-            });
+            createPredictions([
+                {id: '1', count: 2},
+                {id: '2', count: 0},
+                {id: '3', count: 0},
+            ]);
         });
 
         it('should allow jack spade vs simple card', () => {
@@ -378,11 +396,11 @@ describe('Round (class)', () => {
                 countCards: 3
             });
 
-            createPredictions({
-                '1': 2,
-                '2': 0,
-                '3': 0
-            });
+            createPredictions([
+                {id: '1', count: 2},
+                {id: '2', count: 0},
+                {id: '3', count: 0},
+            ]);
 
             round.createStep({
                 playerId: '1',
@@ -461,11 +479,11 @@ describe('Round (class)', () => {
                 countCards: 3
             });
 
-            createPredictions({
-                '1': 2,
-                '2': 0,
-                '3': 0
-            });
+            createPredictions([
+                {id: '1', count: 2},
+                {id: '2', count: 0},
+                {id: '3', count: 0},
+            ]);
 
             round.createStep({
                 playerId: '1',
@@ -524,11 +542,11 @@ describe('Round (class)', () => {
                 countCards: 3
             });
 
-            createPredictions({
-                '1': 2,
-                '2': 0,
-                '3': 0
-            });
+            createPredictions([
+                {id: '3', count: 0},
+                {id: '1', count: 2},
+                {id: '2', count: 0},
+            ]);
         });
 
         it('should work all round with correct steps', () => {
@@ -642,11 +660,11 @@ describe('Round (class) restore game', () => {
             countCards: 3
         });
 
-        createPredictions({
-            '1': 2,
-            '2': 0,
-            '3': 0
-        });
+        createPredictions([
+            {id: '3', count: 0},
+            {id: '1', count: 2},
+            {id: '2', count: 0},
+        ]);
 
         round.createStep({
             playerId: '3',
@@ -707,12 +725,16 @@ describe('Round (class) restore game', () => {
 
     it('should restore snapshot', () => {
         const snapshot: TypeRoundStoreSnapshot = round.getSnapshot();
-
         round = new Round();
         round.restore(snapshot);
 
         expect(snapshot.id).toBe(round.id);
         expect(snapshot.status).toBe(round.status);
         expect(snapshot.trumpCard).toBe(cards.CARD_HEART_7);
+
+        round.createStep({
+            playerId: '2',
+            card: cards.CARD_HEART_10,
+        });
     });
 });

@@ -4,7 +4,7 @@ import {
     WRONG_PLAYER_ORDER, WRONG_PLAYERS_COUNT, ROUND_STEP_CARD_INCORRECT,
     ROUND_ALREADY_STARTED, PLAYER_ALREADY_PLACED_A_BET, PLAYER_NOT_FOUND,
     ROUND_WRONG_PREDICTION_COUNT, ROUND_WRONG_PLAYER_CARDS_COUNT, ROUND_STEP_WRONG_STATUS,
-    ROUND_STEP_CARD_NOT_EXIST
+    ROUND_STEP_CARD_NOT_EXIST, ROUND_WRONG_PREDICTION_ORDER_PLAYER,
 } from 'errors';
 import {CARD_SPADE_JACK} from 'components/card';
 import {getStrongestCard, isCardBigger} from 'utils/collections';
@@ -33,6 +33,7 @@ export type TypeRoundStoreSnapshot = {|
     trumpCard: Card;
     players: Array<RoundPlayerInner>;
     currentOrder: number;
+    currentPredictionOrder: number;
     attackOrder: number;
     currentStepStore: Array<RoundDropCard>;
     status: ROUND_STATUS;
@@ -65,6 +66,7 @@ class Round {
     _trumpCard: Card;
     _players: Array<RoundPlayerInner>;
     _currentOrder: number;
+    _currentPredictionOrder: number;
     _attackOrder: number;
     _currentStepStore: Array<RoundDropCard>;
     _status: ROUND_STATUS;
@@ -95,6 +97,7 @@ class Round {
         });
 
         this._currentOrder = currentOrder;
+        this._currentPredictionOrder = currentOrder;
         this._attackOrder = currentOrder;
         this._currentStepStore = [];
         this._status = ROUND_STATUS_NOT_READY;
@@ -108,6 +111,7 @@ class Round {
         this._trumpCard = params.trumpCard;
         this._players = params.players;
         this._currentOrder = params.currentOrder;
+        this._currentPredictionOrder = params.currentPredictionOrder;
         this._attackOrder = params.attackOrder;
         this._currentStepStore = params.currentStepStore;
         this._status = params.status;
@@ -121,6 +125,7 @@ class Round {
             trumpCard: this._trumpCard,
             players: this._players,
             currentOrder: this._currentOrder,
+            currentPredictionOrder: this._currentPredictionOrder,
             attackOrder: this._attackOrder,
             currentStepStore: this._currentStepStore,
             status: this._status,
@@ -141,12 +146,17 @@ class Round {
             throw new Error(PLAYER_ALREADY_PLACED_A_BET);
         }
 
+        if (this._players[this._currentPredictionOrder].id !== playerId) {
+            throw new Error(ROUND_WRONG_PREDICTION_ORDER_PLAYER);
+        }
+
         if (count < 0 || count > this._countCards) {
             throw new Error(ROUND_WRONG_PREDICTION_COUNT);
         }
 
         player.prediction = count;
         player.voted = true;
+        this._tickPredictionOrder();
         this._validateAllPredictions();
     }
 
@@ -202,6 +212,14 @@ class Round {
             this._currentOrder = 0;
         } else {
             this._currentOrder++;
+        }
+    }
+
+    _tickPredictionOrder() {
+        if (this._currentPredictionOrder === this._countCards - 1) {
+            this._currentPredictionOrder = 0;
+        } else {
+            this._currentPredictionOrder++;
         }
     }
 

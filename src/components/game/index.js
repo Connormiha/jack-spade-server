@@ -24,7 +24,7 @@ export const GAME_STATUS_FINISHED = 'FINISHED';
 export type TypeGamePrediction = {|
     playerId: string,
     count: PredictionCount,
-    roundId: string
+    roundId: number,
 |};
 
 export type TypeGameCeateStepParam = {|
@@ -147,7 +147,7 @@ class Game {
         this._currentRound = new Round({
             players,
             countCards,
-            currentOrder: 0,
+            currentOrder: 0, // should be fixed
             trumpCard: getRandomCards(1, countCards === 6 ? [] : exceptedCards)[0]
         });
 
@@ -162,12 +162,23 @@ class Game {
         this._currentRound.setPrediction(params.playerId, params.count);
     }
 
+    /**
+     * User tryes make action
+     */
     createStep({playerId, card, roundId}: TypeGameCeateStepParam) {
         if (!this._currentRound || this._currentRound.id !== roundId) {
             throw new Error(GAME_WRONG_ROUND);
         }
 
         this._currentRound.createStep({playerId, card});
+
+        if (this._currentRound.status === ROUND_STATUS_FINISHED) {
+            if (this.__currentRoundNumber === 13) {
+                this._status = GAME_STATUS_FINISHED;
+            } else {
+                this._currentRoundNumber++;
+            }
+        }
     }
 
     get roundNumber(): roundNumber {
@@ -192,6 +203,10 @@ class Game {
 
     get countMembers(): number {
         return this._players.length;
+    }
+
+    get roundId(): number {
+        return this._currentRound.id;
     }
 }
 

@@ -2,7 +2,7 @@
 
 import {
     TOO_MACH_MEMBERS, GAME_PLAYER_ALREADY_EXIST, TOO_FEW_MEMBERS,
-    GAME_CURRENT_ROUND_NOT_FINISHED
+    GAME_CURRENT_ROUND_NOT_FINISHED, ROUND_WRONG_PREDICTION_ORDER_PLAYER,
 } from 'errors';
 import Game, {
     MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS
@@ -95,6 +95,107 @@ describe('Game (class) start round', () => {
     });
 });
 
-describe('Game (class) restore', () => {
+describe('Game (class) countCards', () => {
+    const game: Game = new Game({id: '1'});
 
+    [
+        {round: 1, count: 1},
+        {round: 2, count: 2},
+        {round: 3, count: 3},
+        {round: 4, count: 4},
+        {round: 5, count: 5},
+        {round: 6, count: 6},
+        {round: 7, count: 6},
+        {round: 8, count: 5},
+        {round: 9, count: 4},
+        {round: 10, count: 3},
+        {round: 11, count: 2},
+        {round: 12, count: 1},
+        {round: 13, count: 1},
+    ].forEach(({round, count}) =>
+        it(`should be ${count} cards in ${round} round`, () => {
+            game.restore({
+                id: '1',
+                currentRoundNumber: round,
+                mainPlayerId: '1',
+                status: GAME_STATUS_IN_PROGRESS,
+                players: [
+                    {
+                        id: '1',
+                        cards: [],
+                    },
+                    {
+                        id: '2',
+                        cards: [],
+                    }
+                ]
+            });
+
+            expect(game.countCards).toBe(count);
+        })
+    );
 });
+
+describe('Game (class) setPrediction', () => {
+    let game: Game;
+    let player1: Player;
+    let player2: Player;
+
+    beforeEach(() => {
+        game = new Game({id: '1'});
+        player1 = new Player({id: '1'});
+        player2 = new Player({id: '2'});
+    });
+
+    it('should throw error on wrong playerId', () => {
+        game.joinPlayer(player1);
+        game.joinPlayer(player2);
+        game.nextRound();
+
+        expect(() => {
+            game.setPrediction({
+                playerId: '2',
+                count: 1,
+                roundId: game.roundId,
+            });
+        }).toThrowError(ROUND_WRONG_PREDICTION_ORDER_PLAYER);
+    });
+
+    it('should corrent sets prediction', () => {
+        game.joinPlayer(player1);
+        game.joinPlayer(player2);
+        game.nextRound();
+        game.setPrediction({
+            playerId: '1',
+            count: 1,
+            roundId: game.roundId,
+        });
+
+        game.setPrediction({
+            playerId: '2',
+            count: 1,
+            roundId: game.roundId,
+        });
+    });
+});
+
+// describe('Game (class) restore', () => {
+//     let game: Game;
+//     let player1: Player;
+//     let player2: Player;
+//
+//     beforeEach(() => {
+//         game = new Game({id: '1'});
+//         player1 = new Player({id: '1'});
+//         player2 = new Player({id: '2'});
+//     });
+//
+//     it('should restore 1st round', () => {
+//         game.joinPlayer(player1);
+//         game.joinPlayer(player2);
+//         game.nextRound();
+//         game.setPrediction({
+//
+//         });
+//     });
+// });
