@@ -43,6 +43,7 @@ export type TypeGameStoreSnapshot = {|
     id: string,
     currentRound?: TypeRoundStoreSnapshot,
     currentRoundNumber: roundNumber,
+    currentOrderFirstPlayer: number,
     mainPlayerId: string,
     players: Array<TypePlayerStoreSnapshot>,
     status: gameStatus
@@ -53,6 +54,7 @@ class Game {
     _mainPlayerId: string;
     _players: Array<Player>;
     _currentRound: Round;
+    _currentOrderFirstPlayer: number;
     _currentRoundNumber: roundNumber;
     _status: gameStatus;
 
@@ -66,6 +68,7 @@ class Game {
         this._id = id;
         this._players = [];
         this._currentRoundNumber = 1;
+        this._currentOrderFirstPlayer = 0;
         this._status = GAME_STATUS_WAITING;
     }
 
@@ -95,6 +98,7 @@ class Game {
         return {
             currentRound,
             currentRoundNumber: this._currentRoundNumber,
+            currentOrderFirstPlayer: this._currentOrderFirstPlayer,
             mainPlayerId: this._mainPlayerId,
             status: this._status,
             id: this._id,
@@ -112,6 +116,7 @@ class Game {
 
         this._id = params.id;
         this._currentRoundNumber = params.currentRoundNumber;
+        this._currentOrderFirstPlayer = params.currentOrderFirstPlayer;
         this._mainPlayerId = params.mainPlayerId;
         this._status = params.status;
         this._players = params.players.map((item) => new Player().restore(item));
@@ -147,7 +152,7 @@ class Game {
         this._currentRound = new Round({
             players,
             countCards,
-            currentOrder: 0, // should be fixed
+            currentOrder: this._currentOrderFirstPlayer,
             trumpCard: getRandomCards(1, countCards === 6 ? [] : exceptedCards)[0]
         });
 
@@ -177,7 +182,16 @@ class Game {
                 this._status = GAME_STATUS_FINISHED;
             } else {
                 this._currentRoundNumber++;
+                this._tickCurrentOrderFirstPlayer();
             }
+        }
+    }
+
+    _tickCurrentOrderFirstPlayer() {
+        if (this._currentOrderFirstPlayer === this._players.length - 1) {
+            this._currentOrderFirstPlayer = 0;
+        } else {
+            this._currentOrderFirstPlayer++;
         }
     }
 

@@ -196,6 +196,50 @@ describe('Game (class) setPrediction', () => {
     });
 });
 
+describe('Game (class) full game', () => {
+    const game: Game = new Game({id: '1'});
+    const player1: Player = new Player({id: '1'});
+    const player2: Player = new Player({id: '2'});
+    const player3: Player = new Player({id: '3'});
+    let roundId: number;
+
+    it('should join players', () => {
+        game.joinPlayer(player1);
+        game.joinPlayer(player2);
+        game.joinPlayer(player3);
+
+        expect(game.countMembers).toBe(3);
+    });
+
+    it('should set predictions', () => {
+        game.nextRound();
+
+        roundId = game.roundId;
+
+        game.setPrediction({
+            roundId, playerId: '1', count: 1,
+        });
+
+        game.setPrediction({
+            roundId, playerId: '2', count: 1,
+        });
+        game.setPrediction({
+            roundId, playerId: '3', count: 1,
+        });
+
+        expect(game.roundId).toBe(roundId);
+    });
+
+    it('should creat steps', () => {
+        // game.createStep({
+        //     playerId: '1',
+        //     card: '1',
+        // });
+
+        // expect(game.roundId).toBe(roundId);
+    });
+});
+
 // describe('Game (class) restore', () => {
 //     let game: Game;
 //     let player1: Player;
