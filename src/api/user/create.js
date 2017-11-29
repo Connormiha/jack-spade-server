@@ -6,7 +6,7 @@ const callback = (req: express$Request, res: express$Response): void => {
     const user = createUser();
 
     res.json({
-        id: user.id
+        id: user.id,
     });
 };
 

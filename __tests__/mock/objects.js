@@ -1,5 +1,3 @@
 // @flow
 
-export const anyObject = (): any => {
-    return {};
-};
+export const anyObject = (): any => ({});

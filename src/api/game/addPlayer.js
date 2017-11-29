@@ -14,7 +14,7 @@ const callback = (req: express$Request, res: express$Response): void => {
     }
 
     res.json({
-        id: player.id
+        id: player.id,
     });
 };
 

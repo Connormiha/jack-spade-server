@@ -6,7 +6,7 @@ import {
     ROUND_ALREADY_STARTED,
 } from 'errors';
 import Game, {
-    MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS
+    MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS,
 } from 'components/game';
 import Player from 'components/player';
 
@@ -117,7 +117,9 @@ describe('Game (class) countCards', () => {
         it(`should be ${count} cards in ${round} round`, () => {
             game.restore({
                 id: '1',
+                currentRound: null,
                 currentRoundNumber: round,
+                currentOrderFirstPlayer: 0,
                 mainPlayerId: '1',
                 status: GAME_STATUS_IN_PROGRESS,
                 players: [
@@ -128,8 +130,8 @@ describe('Game (class) countCards', () => {
                     {
                         id: '2',
                         cards: [],
-                    }
-                ]
+                    },
+                ],
             });
 
             expect(game.countCards).toBe(count);

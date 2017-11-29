@@ -3,7 +3,7 @@
 import deleteUser from 'actions/deleteUser';
 
 const callback = (req: express$Request, res: express$Response): void => {
-    const body: any = req.body;
+    const {body}: any = req;
     const result = deleteUser(body.id);
 
     if (result.success) {

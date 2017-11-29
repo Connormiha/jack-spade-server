@@ -1,8 +1,9 @@
 // @flow
 
+/* eslint no-new: "off" */
 import Round from 'components/round';
 import {
-    ROUND_STATUS_NOT_READY, ROUND_STATUS_READY
+    ROUND_STATUS_NOT_READY, ROUND_STATUS_READY,
 } from 'components/round';
 import type {TypeRoundStoreSnapshot} from 'components/round';
 import * as cards from 'components/card';
@@ -20,16 +21,16 @@ import type {PredictionCount} from 'components/round';
 const mockInitialPlayers = [
     {
         id: '1',
-        cards: [cards.CARD_SPADE_QUEEN, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+        cards: [cards.CARD_SPADE_QUEEN, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
     },
     {
         id: '2',
-        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
     },
     {
         id: '3',
-        cards: [cards.CARD_HEART_6, cards.CARD_HEART_7, cards.CARD_HEART_8]
-    }
+        cards: [cards.CARD_HEART_6, cards.CARD_HEART_7, cards.CARD_HEART_8],
+    },
 ];
 
 let round;
@@ -51,7 +52,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            countCards: 3
+            countCards: 3,
         });
 
         expect(round.status).toBe(ROUND_STATUS_NOT_READY);
@@ -63,7 +64,7 @@ describe('Round (class)', () => {
                 trumpCard: cards.CARD_SPADE_10,
                 players: mockInitialPlayers.slice(0, 1),
                 currentOrder: 0,
-                countCards: 3
+                countCards: 3,
             });
         }).toThrowError(WRONG_PLAYERS_COUNT);
 
@@ -72,7 +73,7 @@ describe('Round (class)', () => {
                 trumpCard: cards.CARD_SPADE_10,
                 players: [],
                 currentOrder: 0,
-                countCards: 3
+                countCards: 3,
             });
         }).toThrowError(WRONG_PLAYERS_COUNT);
 
@@ -82,7 +83,7 @@ describe('Round (class)', () => {
                 trumpCard: cards.CARD_SPADE_10,
                 players: [...mockInitialPlayers, ...mockInitialPlayers, ...mockInitialPlayers].slice(0, 7),
                 currentOrder: 0,
-                countCards: 3
+                countCards: 3,
             });
         }).toThrowError(WRONG_PLAYERS_COUNT);
     });
@@ -92,7 +93,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            countCards: 3
+            countCards: 3,
         });
 
         round.setPrediction('1', 1);
@@ -109,7 +110,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            countCards: 3
+            countCards: 3,
         });
 
         round.setPrediction('1', 1);
@@ -123,7 +124,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            countCards: 3
+            countCards: 3,
         });
 
         expect(() => round.setPrediction('2', 1)).toThrowError(ROUND_WRONG_PREDICTION_ORDER_PLAYER);
@@ -135,7 +136,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            countCards: 3
+            countCards: 3,
         });
 
         round.setPrediction('1', 1);
@@ -152,7 +153,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            countCards: 3
+            countCards: 3,
         });
 
         expect(() => {
@@ -171,7 +172,7 @@ describe('Round (class)', () => {
             trumpCard: cards.CARD_SPADE_10,
             players: mockInitialPlayers,
             currentOrder: 0,
-            countCards: 3
+            countCards: 3,
         });
 
         expect(() => {
@@ -185,18 +186,18 @@ describe('Round (class)', () => {
                 trumpCard: cards.CARD_SPADE_10,
                 players: mockInitialPlayers,
                 currentOrder: 0,
-                countCards: 1
+                countCards: 1,
             });
         }).toThrowError(ROUND_WRONG_PLAYER_CARDS_COUNT);
     });
 
-    describe('createStep' , () => {
+    describe('createStep', () => {
         beforeEach(() => {
             round = new Round({
                 trumpCard: cards.CARD_SPADE_10,
                 players: mockInitialPlayers,
                 currentOrder: 0,
-                countCards: 3
+                countCards: 3,
             });
         });
 
@@ -204,7 +205,7 @@ describe('Round (class)', () => {
             expect(() => {
                 round.createStep({
                     playerId: '1',
-                    card: cards.CARD_HEART_ACE
+                    card: cards.CARD_HEART_ACE,
                 });
             }).toThrowError(ROUND_STEP_WRONG_STATUS);
         });
@@ -219,14 +220,14 @@ describe('Round (class)', () => {
             expect(() => {
                 round.createStep({
                     playerId: '2',
-                    card: cards.CARD_HEART_ACE
+                    card: cards.CARD_HEART_ACE,
                 });
             }).toThrowError(WRONG_PLAYER_ORDER);
 
             expect(() => {
                 round.createStep({
                     playerId: '20',
-                    card: cards.CARD_HEART_ACE
+                    card: cards.CARD_HEART_ACE,
                 });
             }).toThrowError(WRONG_PLAYER_ORDER);
         });
@@ -240,7 +241,7 @@ describe('Round (class)', () => {
 
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_HEART_ACE
+                card: cards.CARD_HEART_ACE,
             });
 
             const snapshot = round.getSnapshot();
@@ -259,12 +260,12 @@ describe('Round (class)', () => {
             expect(() => {
                 round.createStep({
                     playerId: '1',
-                    card: cards.CARD_SPADE_JACK
+                    card: cards.CARD_SPADE_JACK,
                 });
             }).toThrowError(ROUND_STEP_CARD_NOT_EXIST);
         });
 
-        describe('defense step' , () => {
+        describe('defense step', () => {
             beforeEach(() => {
                 createPredictions([
                     {id: '1', count: 2},
@@ -274,14 +275,14 @@ describe('Round (class)', () => {
 
                 round.createStep({
                     playerId: '1',
-                    card: cards.CARD_HEART_ACE
+                    card: cards.CARD_HEART_ACE,
                 });
             });
 
             it('should create defense step', () => {
                 round.createStep({
                     playerId: '2',
-                    card: cards.CARD_HEART_9
+                    card: cards.CARD_HEART_9,
                 });
 
                 const snapshot = round.getSnapshot();
@@ -289,7 +290,7 @@ describe('Round (class)', () => {
                 expect(snapshot.currentOrder).toBe(2);
                 expect(snapshot.currentStepStore).toEqual([
                     {playerId: '1', card: cards.CARD_HEART_ACE},
-                    {playerId: '2', card: cards.CARD_HEART_9}
+                    {playerId: '2', card: cards.CARD_HEART_9},
                 ]);
             });
 
@@ -297,7 +298,7 @@ describe('Round (class)', () => {
                 expect(() => {
                     round.createStep({
                         playerId: '2',
-                        card: cards.CARD_SPADE_KING
+                        card: cards.CARD_SPADE_KING,
                     });
                 }).toThrowError(ROUND_STEP_CARD_INCORRECT);
             });
@@ -311,19 +312,19 @@ describe('Round (class)', () => {
                 players: [
                     {
                         id: '1',
-                        cards: [cards.CARD_SPADE_10, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                        cards: [cards.CARD_SPADE_10, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
                     },
                     {
                         id: '2',
-                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_10, cards.CARD_HEART_9],
                     },
                     {
                         id: '3',
-                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
-                    }
+                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
+                    },
                 ],
                 currentOrder: 0,
-                countCards: 3
+                countCards: 3,
             });
 
             createPredictions([
@@ -336,12 +337,12 @@ describe('Round (class)', () => {
         it('should allow jack spade vs simple card', () => {
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_SPADE_10
+                card: cards.CARD_SPADE_10,
             });
 
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_SPADE_JACK
+                card: cards.CARD_SPADE_JACK,
             });
 
             const snapshot = round.getSnapshot();
@@ -349,19 +350,19 @@ describe('Round (class)', () => {
             expect(snapshot.currentOrder).toBe(2);
             expect(snapshot.currentStepStore).toEqual([
                 {playerId: '1', card: cards.CARD_SPADE_10},
-                {playerId: '2', card: cards.CARD_SPADE_JACK}
+                {playerId: '2', card: cards.CARD_SPADE_JACK},
             ]);
         });
 
         it('should allow jack spade vs trump card', () => {
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_HEART_ACE
+                card: cards.CARD_HEART_ACE,
             });
 
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_SPADE_JACK
+                card: cards.CARD_SPADE_JACK,
             });
 
             const snapshot = round.getSnapshot();
@@ -369,7 +370,7 @@ describe('Round (class)', () => {
             expect(snapshot.currentOrder).toBe(2);
             expect(snapshot.currentStepStore).toEqual([
                 {playerId: '1', card: cards.CARD_HEART_ACE},
-                {playerId: '2', card: cards.CARD_SPADE_JACK}
+                {playerId: '2', card: cards.CARD_SPADE_JACK},
             ]);
         });
     });
@@ -381,19 +382,19 @@ describe('Round (class)', () => {
                 players: [
                     {
                         id: '1',
-                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
                     },
                     {
                         id: '2',
-                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
                     },
                     {
                         id: '3',
-                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
-                    }
+                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
+                    },
                 ],
                 currentOrder: 0,
-                countCards: 3
+                countCards: 3,
             });
 
             createPredictions([
@@ -404,14 +405,14 @@ describe('Round (class)', () => {
 
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_SPADE_JACK
+                card: cards.CARD_SPADE_JACK,
             });
         });
 
         it('should allow the greatest card', () => {
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_HEART_10
+                card: cards.CARD_HEART_10,
             });
 
             const snapshot = round.getSnapshot();
@@ -419,7 +420,7 @@ describe('Round (class)', () => {
             expect(snapshot.currentOrder).toBe(2);
             expect(snapshot.currentStepStore).toEqual([
                 {playerId: '1', card: cards.CARD_SPADE_JACK},
-                {playerId: '2', card: cards.CARD_HEART_10}
+                {playerId: '2', card: cards.CARD_HEART_10},
             ]);
         });
 
@@ -427,25 +428,25 @@ describe('Round (class)', () => {
             expect(() => {
                 round.createStep({
                     playerId: '2',
-                    card: cards.CARD_HEART_9
+                    card: cards.CARD_HEART_9,
                 });
             }).toThrowError(ROUND_STEP_CARD_INCORRECT);
 
             expect(() => {
                 round.createStep({
                     playerId: '2',
-                    card: cards.CARD_SPADE_KING
+                    card: cards.CARD_SPADE_KING,
                 });
             }).toThrowError(ROUND_STEP_CARD_INCORRECT);
 
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_HEART_10
+                card: cards.CARD_HEART_10,
             });
 
             round.createStep({
                 playerId: '3',
-                card: cards.CARD_CLUB_10
+                card: cards.CARD_CLUB_10,
             });
 
             const snapshot = round.getSnapshot();
@@ -464,19 +465,19 @@ describe('Round (class)', () => {
                 players: [
                     {
                         id: '1',
-                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
                     },
                     {
                         id: '2',
-                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
                     },
                     {
                         id: '3',
-                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
-                    }
+                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
+                    },
                 ],
                 currentOrder: 0,
-                countCards: 3
+                countCards: 3,
             });
 
             createPredictions([
@@ -487,14 +488,14 @@ describe('Round (class)', () => {
 
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_HEART_QUEEN
+                card: cards.CARD_HEART_QUEEN,
             });
         });
 
         it('should allow correct suit card', () => {
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_HEART_10
+                card: cards.CARD_HEART_10,
             });
 
             let snapshot = round.getSnapshot();
@@ -502,12 +503,12 @@ describe('Round (class)', () => {
             expect(snapshot.currentOrder).toBe(2);
             expect(snapshot.currentStepStore).toEqual([
                 {playerId: '1', card: cards.CARD_HEART_QUEEN},
-                {playerId: '2', card: cards.CARD_HEART_10}
+                {playerId: '2', card: cards.CARD_HEART_10},
             ]);
 
             round.createStep({
                 playerId: '3',
-                card: cards.CARD_CLUB_KING
+                card: cards.CARD_CLUB_KING,
             });
 
             snapshot = round.getSnapshot();
@@ -527,19 +528,19 @@ describe('Round (class)', () => {
                 players: [
                     {
                         id: '1',
-                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                        cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
                     },
                     {
                         id: '2',
-                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
                     },
                     {
                         id: '3',
-                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
-                    }
+                        cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
+                    },
                 ],
                 currentOrder: 2,
-                countCards: 3
+                countCards: 3,
             });
 
             createPredictions([
@@ -552,49 +553,49 @@ describe('Round (class)', () => {
         it('should work all round with correct steps', () => {
             round.createStep({
                 playerId: '3',
-                card: cards.CARD_CLUB_10
+                card: cards.CARD_CLUB_10,
             });
 
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_HEART_QUEEN
+                card: cards.CARD_HEART_QUEEN,
             });
 
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_SPADE_KING
+                card: cards.CARD_SPADE_KING,
             });
 
             // Player: 1 won
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_HEART_ACE
+                card: cards.CARD_HEART_ACE,
             });
 
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_HEART_9
+                card: cards.CARD_HEART_9,
             });
 
             round.createStep({
                 playerId: '3',
-                card: cards.CARD_CLUB_KING
+                card: cards.CARD_CLUB_KING,
             });
 
             // 'Player 1' won
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_SPADE_JACK
+                card: cards.CARD_SPADE_JACK,
             });
 
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_HEART_10
+                card: cards.CARD_HEART_10,
             });
 
             round.createStep({
                 playerId: '3',
-                card: cards.CARD_CLUB_9
+                card: cards.CARD_CLUB_9,
             });
 
             const snapshot = round.getSnapshot();
@@ -607,31 +608,31 @@ describe('Round (class)', () => {
         it('shouldn\'t allow use old cards', () => {
             round.createStep({
                 playerId: '3',
-                card: cards.CARD_CLUB_10
+                card: cards.CARD_CLUB_10,
             });
 
             round.createStep({
                 playerId: '1',
-                card: cards.CARD_HEART_QUEEN
+                card: cards.CARD_HEART_QUEEN,
             });
 
             round.createStep({
                 playerId: '2',
-                card: cards.CARD_SPADE_KING
+                card: cards.CARD_SPADE_KING,
             });
 
             // 'Player 1' won
             expect(() => {
                 round.createStep({
                     playerId: '1',
-                    card: cards.CARD_HEART_QUEEN
+                    card: cards.CARD_HEART_QUEEN,
                 });
             }).toThrowError(ROUND_STEP_CARD_NOT_EXIST);
 
             expect(() => {
                 round.createStep({
                     playerId: '2',
-                    card: cards.CARD_SPADE_KING
+                    card: cards.CARD_SPADE_KING,
                 });
             }).toThrowError(WRONG_PLAYER_ORDER);
         });
@@ -645,19 +646,19 @@ describe('Round (class) restore game', () => {
             players: [
                 {
                     id: '1',
-                    cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE]
+                    cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
                 },
                 {
                     id: '2',
-                    cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9]
+                    cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
                 },
                 {
                     id: '3',
-                    cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9]
-                }
+                    cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
+                },
             ],
             currentOrder: 2,
-            countCards: 3
+            countCards: 3,
         });
 
         createPredictions([
@@ -668,12 +669,12 @@ describe('Round (class) restore game', () => {
 
         round.createStep({
             playerId: '3',
-            card: cards.CARD_CLUB_10
+            card: cards.CARD_CLUB_10,
         });
 
         round.createStep({
             playerId: '1',
-            card: cards.CARD_HEART_QUEEN
+            card: cards.CARD_HEART_QUEEN,
         });
     });
 
@@ -696,30 +697,30 @@ describe('Round (class) restore game', () => {
                 points: 0,
                 prediction: 2,
                 id: '1',
-                voted: true
+                voted: true,
             },
             {
                 points: 0,
                 prediction: 0,
                 id: '2',
-                voted: true
+                voted: true,
             },
             {
                 points: 0,
                 prediction: 0,
                 id: '3',
-                voted: true
-            }
+                voted: true,
+            },
         ]);
         expect(snapshot.currentStepStore).toEqual([
             {
                 playerId: '3',
-                card: cards.CARD_CLUB_10
+                card: cards.CARD_CLUB_10,
             },
             {
                 playerId: '1',
-                card: cards.CARD_HEART_QUEEN
-            }
+                card: cards.CARD_HEART_QUEEN,
+            },
         ]);
     });
 

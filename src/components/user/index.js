@@ -1,16 +1,16 @@
 // @flow
 
-type id_type = string;
-type init_params = {id: id_type};
+type TypeId = string;
+type TypeInitParams = {id: TypeId};
 
 class User {
-    _id: id_type;
+    _id: TypeId;
 
-    constructor({id}: init_params) {
+    constructor({id}: TypeInitParams) {
         this._id = id;
     }
 
-    get id(): id_type {
+    get id(): TypeId {
         return this._id;
     }
 }

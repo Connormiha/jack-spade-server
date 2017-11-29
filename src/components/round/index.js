@@ -29,6 +29,12 @@ type RoundDropCard = {|
     card: Card
 |};
 
+export const ROUND_STATUS_NOT_READY = 'NOT_READY';
+export const ROUND_STATUS_READY = 'READY';
+export const ROUND_STATUS_FINISHED = 'FINISHED';
+
+export type ROUND_STATUS = 'NOT_READY' | 'READY' | 'FINISHED';
+
 export type TypeRoundStoreSnapshot = {|
     trumpCard: Card;
     players: Array<RoundPlayerInner>;
@@ -54,13 +60,10 @@ type createStepParam = {|
     card: Card
 |};
 
-export const ROUND_STATUS_NOT_READY = 'NOT_READY';
-export const ROUND_STATUS_READY = 'READY';
-export const ROUND_STATUS_FINISHED = 'FINISHED';
-
-export type ROUND_STATUS = 'NOT_READY' | 'READY' | 'FINISHED';
-
 let id = 1;
+
+const hasCard = (player: RoundPlayerInner, card: Card): boolean =>
+    player.cards.some((item) => item === card);
 
 class Round {
     _trumpCard: Card;
@@ -92,7 +95,7 @@ class Round {
             }
 
             return {
-                id, cards, points: 0, prediction: 0, voted: false
+                id, cards, points: 0, prediction: 0, voted: false,
             };
         });
 
@@ -131,7 +134,7 @@ class Round {
             status: this._status,
             countCards: this._countCards,
             currentStepNumber: this._currentStepNumber,
-            id: this._id
+            id: this._id,
         };
     }
 
@@ -223,10 +226,6 @@ class Round {
         }
     }
 
-    _hasCard(player: RoundPlayerInner, card: Card): boolean {
-        return player.cards.some((item) => item === card);
-    }
-
     _setFinished() {
         this._status = ROUND_STATUS_FINISHED;
     }
@@ -245,21 +244,21 @@ class Round {
 
             if (strongestCard.suit === this._trumpCard.suit) {
                 return strongestCard === card;
-            } else {
-                return true;
-            }
-        } else {
-            if (headCard.suit === card.suit) {
-                return true;
             }
 
-            if (card === CARD_SPADE_JACK) {
-                return true;
-            }
+            return true;
+        }
 
-            if (player.cards.every((item) => (item.suit !== headCard.suit || item === CARD_SPADE_JACK))) {
-                return true;
-            }
+        if (headCard.suit === card.suit) {
+            return true;
+        }
+
+        if (card === CARD_SPADE_JACK) {
+            return true;
+        }
+
+        if (player.cards.every((item) => (item.suit !== headCard.suit || item === CARD_SPADE_JACK))) {
+            return true;
         }
 
         return false;
@@ -276,7 +275,7 @@ class Round {
             throw new Error(WRONG_PLAYER_ORDER);
         }
 
-        if (!this._hasCard(player, card)) {
+        if (!hasCard(player, card)) {
             throw new Error(ROUND_STEP_CARD_NOT_EXIST);
         }
 
@@ -285,7 +284,7 @@ class Round {
         if (isAttack || this._isCorrectStep(playerId, card)) {
             this._currentStepStore.push({
                 playerId,
-                card
+                card,
             });
 
             player.cards = player.cards.filter((item) => item !== card);

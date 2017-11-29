@@ -5,14 +5,14 @@ import * as cards from 'components/card';
 import {ERROR_PLAYER_CARD_EXIST, ERROR_PLAYER_CARD_NOT_EXIST} from 'errors';
 
 describe('Player (class)', () => {
-    it('should have instance', ()=> {
+    it('should have instance', () => {
         const player = new Player({id: '1'});
 
         expect(player).toBeInstanceOf(Player);
         expect(player.id).toBe('1');
     });
 
-    it('should work addCard', ()=> {
+    it('should work addCard', () => {
         const player = new Player({id: '1'});
 
         expect(player.hasCard(cards.CARD_SPADE_10)).toBe(false);
@@ -29,7 +29,7 @@ describe('Player (class)', () => {
         expect(player.hasCard(cards.CARD_SPADE_QUEEN)).toBe(true);
     });
 
-    it('should throw error on add exist card', ()=> {
+    it('should throw error on add exist card', () => {
         const player = new Player({id: '1'});
 
         player.addCard(cards.CARD_SPADE_10);
@@ -39,7 +39,7 @@ describe('Player (class)', () => {
         }).toThrowError(ERROR_PLAYER_CARD_EXIST);
     });
 
-    it('should work deleteCard', ()=> {
+    it('should work deleteCard', () => {
         const player = new Player({id: '1'});
 
         player.addCard(cards.CARD_SPADE_10);
@@ -54,7 +54,7 @@ describe('Player (class)', () => {
         expect(player.hasCard(cards.CARD_SPADE_10)).toBe(false);
     });
 
-    it('should throw error on delete unexist card', ()=> {
+    it('should throw error on delete unexist card', () => {
         const player = new Player({id: '1'});
 
         expect(() => {
@@ -72,7 +72,7 @@ describe('Player (class)', () => {
         expect(player.getCountCards()).toBe(1);
     });
 
-    it('should work getAllCards', ()=> {
+    it('should work getAllCards', () => {
         const player = new Player({id: '1'});
 
         player.addCard(cards.CARD_SPADE_10);
@@ -93,7 +93,7 @@ describe('Player (class)', () => {
         expect(snapshot.id).toBe(player.id);
         expect(snapshot.cards).toEqual([
             cards.CARD_SPADE_10,
-            cards.CARD_SPADE_QUEEN
+            cards.CARD_SPADE_QUEEN,
         ]);
     });
 
@@ -111,7 +111,7 @@ describe('Player (class)', () => {
         expect(player2.id).toBe(player.id);
         expect(player2.getAllCards()).toEqual([
             cards.CARD_SPADE_10,
-            cards.CARD_SPADE_QUEEN
+            cards.CARD_SPADE_QUEEN,
         ]);
     });
 });

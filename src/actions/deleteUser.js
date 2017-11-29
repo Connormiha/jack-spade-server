@@ -6,7 +6,7 @@ const deleteUser = (id: string): any => {
     const success = users.delete(id);
 
     return {
-        success
+        success,
     };
 };
 

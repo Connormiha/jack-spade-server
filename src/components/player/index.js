@@ -3,7 +3,7 @@
 import {ERROR_PLAYER_CARD_EXIST, ERROR_PLAYER_CARD_NOT_EXIST} from 'errors';
 import type {Card} from 'components/card';
 
-type init_params = {id: string};
+type TypeInitParams = {id: string};
 
 export type TypePlayerStoreSnapshot = {|
     id: string,
@@ -14,13 +14,13 @@ class Player {
     _id: string;
     _cards: Set<Card>;
 
-    constructor(params?: init_params) {
+    constructor(params?: TypeInitParams) {
         if (params) {
             this._create(params);
         }
     }
 
-    _create({id}: init_params) {
+    _create({id}: TypeInitParams) {
         this._id = id;
         this._cards = new Set();
     }
@@ -28,7 +28,7 @@ class Player {
     getSnapshot(): TypePlayerStoreSnapshot {
         return {
             id: this._id,
-            cards: this.getAllCards()
+            cards: this.getAllCards(),
         };
     }
 
@@ -57,6 +57,10 @@ class Player {
 
     hasCard(card: any): boolean {
         return this._cards.has(card);
+    }
+
+    clearCards() {
+        this._cards.clear();
     }
 
     getAllCards(): Array<Card> {

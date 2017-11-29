@@ -6,7 +6,7 @@ const callback = (req: express$Request, res: express$Response): void => {
     const game = createGame();
 
     res.json({
-        id: game.id
+        id: game.id,
     });
 };
 

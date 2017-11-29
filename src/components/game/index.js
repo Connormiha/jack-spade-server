@@ -2,12 +2,12 @@
 
 import {
     TOO_MACH_MEMBERS, TOO_FEW_MEMBERS, GAME_PLAYER_ALREADY_EXIST,
-    GAME_CURRENT_ROUND_NOT_FINISHED, GAME_IS_FINISHED, GAME_WRONG_ROUND
+    GAME_CURRENT_ROUND_NOT_FINISHED, GAME_IS_FINISHED, GAME_WRONG_ROUND,
 } from 'errors';
 import Player from 'components/player';
 import type {TypePlayerStoreSnapshot} from 'components/player';
 import Round, {
-    ROUND_STATUS_FINISHED
+    ROUND_STATUS_FINISHED,
 } from 'components/round';
 import type {TypeRoundStoreSnapshot, PredictionCount} from 'components/round';
 import {getRandomCards} from 'utils/collections';
@@ -33,7 +33,7 @@ export type TypeGameCeateStepParam = {|
     card: Card
 |};
 
-type init_params = {
+type TypeInitParams = {
     id: string
 };
 type roundNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
@@ -41,7 +41,7 @@ type gameStatus = 'WAITING' | 'IN_PROGRESS' | 'FINISHED';
 
 export type TypeGameStoreSnapshot = {|
     id: string,
-    currentRound?: TypeRoundStoreSnapshot,
+    currentRound: TypeRoundStoreSnapshot | null,
     currentRoundNumber: roundNumber,
     currentOrderFirstPlayer: number,
     mainPlayerId: string,
@@ -53,21 +53,22 @@ class Game {
     _id: string;
     _mainPlayerId: string;
     _players: Array<Player>;
-    _currentRound: Round;
+    _currentRound: Round | null;
     _currentOrderFirstPlayer: number;
     _currentRoundNumber: roundNumber;
     _status: gameStatus;
 
-    constructor(params?: init_params) {
+    constructor(params?: TypeInitParams) {
         if (params) {
             this._create(params);
         }
     }
 
-    _create({id}: init_params) {
+    _create({id}: TypeInitParams) {
         this._id = id;
         this._players = [];
         this._currentRoundNumber = 1;
+        this._currentRound = null;
         this._currentOrderFirstPlayer = 0;
         this._status = GAME_STATUS_WAITING;
     }
@@ -93,7 +94,7 @@ class Game {
     }
 
     getSnapshot(): TypeGameStoreSnapshot {
-        const currentRound = this._currentRound ? this._currentRound.getSnapshot() : void 0;
+        const currentRound = this._currentRound ? this._currentRound.getSnapshot() : null;
 
         return {
             currentRound,
@@ -102,7 +103,7 @@ class Game {
             mainPlayerId: this._mainPlayerId,
             status: this._status,
             id: this._id,
-            players: this._players.map((item) => item.getSnapshot())
+            players: this._players.map((item) => item.getSnapshot()),
         };
     }
 
@@ -145,7 +146,7 @@ class Game {
 
             return {
                 cards,
-                id
+                id,
             };
         });
 
@@ -153,7 +154,7 @@ class Game {
             players,
             countCards,
             currentOrder: this._currentOrderFirstPlayer,
-            trumpCard: getRandomCards(1, countCards === 6 ? [] : exceptedCards)[0]
+            trumpCard: getRandomCards(1, countCards === 6 ? [] : exceptedCards)[0],
         });
 
         this._status = GAME_STATUS_IN_PROGRESS;
@@ -171,13 +172,15 @@ class Game {
      * User tryes make action
      */
     createStep({playerId, card, roundId}: TypeGameCeateStepParam) {
-        if (!this._currentRound || this._currentRound.id !== roundId) {
+        const currentRound = this._currentRound;
+
+        if (!currentRound || currentRound.id !== roundId) {
             throw new Error(GAME_WRONG_ROUND);
         }
 
-        this._currentRound.createStep({playerId, card});
+        currentRound.createStep({playerId, card});
 
-        if (this._currentRound.status === ROUND_STATUS_FINISHED) {
+        if (currentRound.status === ROUND_STATUS_FINISHED) {
             if (this.__currentRoundNumber === 13) {
                 this._status = GAME_STATUS_FINISHED;
             } else {
@@ -220,7 +223,7 @@ class Game {
     }
 
     get roundId(): number {
-        return this._currentRound.id;
+        return this._currentRound ? this._currentRound.id : -1;
     }
 }
 

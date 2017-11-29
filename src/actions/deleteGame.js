@@ -6,7 +6,7 @@ const deleteGame = (id: string): any => {
     const success = games.delete(id);
 
     return {
-        success
+        success,
     };
 };
 
