@@ -59,3 +59,11 @@ export const getStrongestCard = (desk: Array<Card>, trumpCard: Card): Card => {
 
     return maxCard;
 };
+
+export const sortCards = (cards: Card[]): Card[] =>
+    cards.slice().sort((a, b) => {
+        const value1 = SUITS_DESK[a.suit].indexOf(a);
+        const value2 = SUITS_DESK[b.suit].indexOf(b);
+
+        return value1 - value2;
+    });
