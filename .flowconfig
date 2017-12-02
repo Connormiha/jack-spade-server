@@ -1,5 +1,6 @@
 [lints]
 all=warn
+unclear-type=off
 
 [options]
 emoji=true

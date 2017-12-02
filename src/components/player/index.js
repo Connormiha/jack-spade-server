@@ -39,7 +39,7 @@ class Player {
         return this;
     }
 
-    addCard(card: any): void {
+    addCard(card: Card) {
         if (this._cards.has(card)) {
             throw new Error(ERROR_PLAYER_CARD_EXIST);
         }
@@ -47,7 +47,7 @@ class Player {
         this._cards.add(card);
     }
 
-    deleteCard(card: any): void {
+    deleteCard(card: Card) {
         if (!this._cards.has(card)) {
             throw new Error(ERROR_PLAYER_CARD_NOT_EXIST);
         }
@@ -55,7 +55,7 @@ class Player {
         this._cards.delete(card);
     }
 
-    hasCard(card: any): boolean {
+    hasCard(card: Card): boolean {
         return this._cards.has(card);
     }
 

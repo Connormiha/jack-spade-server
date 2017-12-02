@@ -3,7 +3,7 @@
 import deleteGame from 'actions/deleteGame';
 
 const callback = (req: express$Request, res: express$Response): void => {
-    const body: any = req.body;
+    const body: {id: string} = req.body;
     const result = deleteGame(body.id);
 
     if (result.success) {

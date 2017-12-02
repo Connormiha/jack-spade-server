@@ -2,7 +2,7 @@
 import addPlayer from 'actions/addPlayer';
 
 const callback = (req: express$Request, res: express$Response): void => {
-    const body: any = req.body;
+    const body: {gameId: string} = req.body;
     let player;
 
     try {
