@@ -40,7 +40,7 @@ class Player {
     }
 
     addCard(card: Card) {
-        if (this._cards.has(card)) {
+        if (this.hasCard(card)) {
             throw new Error(ERROR_PLAYER_CARD_EXIST);
         }
 
@@ -61,6 +61,14 @@ class Player {
 
     clearCards() {
         this._cards.clear();
+    }
+
+    fillCards(cards: Card[]) {
+        this.clearCards();
+
+        for (const card of cards) {
+            this.addCard(card);
+        }
     }
 
     getAllCards(): Array<Card> {

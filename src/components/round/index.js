@@ -8,21 +8,26 @@ import {
 } from 'errors';
 import {CARD_SPADE_JACK} from 'components/card';
 import {getStrongestCard, isCardBigger} from 'utils/collections';
+import Player from 'components/player';
+import type {TypePlayerStoreSnapshot} from 'components/player';
 
 import type {Card} from 'components/card';
 
 export type PredictionCount = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-export type RoundPlayer = {
-    cards: Array<Card>,
-    +id: string
-};
-
-type RoundPlayerInner = RoundPlayer & {
+type RoundPlayerInner = {|
+    player: Player,
     points: number,
     prediction: PredictionCount,
     voted: boolean
-};
+|};
+
+type RoundPlayerInnerStoreSnapshot = {|
+    player: TypePlayerStoreSnapshot,
+    points: number,
+    prediction: PredictionCount,
+    voted: boolean
+|};
 
 type RoundDropCard = {|
     playerId: string,
@@ -37,7 +42,7 @@ export type ROUND_STATUS = 'NOT_READY' | 'READY' | 'FINISHED';
 
 export type TypeRoundStoreSnapshot = {|
     trumpCard: Card;
-    players: Array<RoundPlayerInner>;
+    players: Array<RoundPlayerInnerStoreSnapshot>;
     currentOrder: number;
     currentPredictionOrder: number;
     attackOrder: number;
@@ -50,7 +55,7 @@ export type TypeRoundStoreSnapshot = {|
 
 export type RoundInitialParams = {|
     trumpCard: Card,
-    players: Array<RoundPlayer>,
+    players: Player[],
     currentOrder: number,
     countCards: number,
 |};
@@ -62,8 +67,14 @@ type createStepParam = {|
 
 let id = 1;
 
-const hasCard = (player: RoundPlayerInner, card: Card): boolean =>
-    player.cards.some((item) => item === card);
+const getSnapshotRoundPlayer = (item: RoundPlayerInner): RoundPlayerInnerStoreSnapshot => {
+    const playerSnapshot = item.player.getSnapshot();
+
+    return {
+        points: item.points, prediction: item.prediction, voted: item.voted,
+        player: playerSnapshot,
+    };
+};
 
 class Round {
     _trumpCard: Card;
@@ -89,13 +100,13 @@ class Round {
         }
 
         this._trumpCard = trumpCard;
-        this._players = players.map(({id, cards}) => {
-            if (cards.length !== countCards) {
+        this._players = players.map((player: Player) => {
+            if (player.getCountCards() !== countCards) {
                 throw new Error(ROUND_WRONG_PLAYER_CARDS_COUNT);
             }
 
             return {
-                id, cards, points: 0, prediction: 0, voted: false,
+                player, points: 0, prediction: 0, voted: false,
             };
         });
 
@@ -112,7 +123,13 @@ class Round {
 
     restore(params: TypeRoundStoreSnapshot) {
         this._trumpCard = params.trumpCard;
-        this._players = params.players;
+        this._players = params.players.map((item: RoundPlayerInnerStoreSnapshot): RoundPlayerInner => {
+            const player = new Player().restore(item.player);
+
+            return {
+                player, points: 0, prediction: 0, voted: false,
+            };
+        });
         this._currentOrder = params.currentOrder;
         this._currentPredictionOrder = params.currentPredictionOrder;
         this._attackOrder = params.attackOrder;
@@ -126,7 +143,7 @@ class Round {
     getSnapshot(): TypeRoundStoreSnapshot {
         return {
             trumpCard: this._trumpCard,
-            players: this._players,
+            players: this._players.map(getSnapshotRoundPlayer),
             currentOrder: this._currentOrder,
             currentPredictionOrder: this._currentPredictionOrder,
             attackOrder: this._attackOrder,
@@ -149,7 +166,7 @@ class Round {
             throw new Error(PLAYER_ALREADY_PLACED_A_BET);
         }
 
-        if (this._players[this._currentPredictionOrder].id !== playerId) {
+        if (this._players[this._currentPredictionOrder].player.id !== playerId) {
             throw new Error(ROUND_WRONG_PREDICTION_ORDER_PLAYER);
         }
 
@@ -197,9 +214,9 @@ class Round {
     }
 
     _getPlayerById(id: string): RoundPlayerInner {
-        for (const player of this._players) {
-            if (player.id === id) {
-                return player;
+        for (const roundPlayer of this._players) {
+            if (roundPlayer.player.id === id) {
+                return roundPlayer;
             }
         }
 
@@ -232,15 +249,16 @@ class Round {
 
     _isCorrectStep(playerId: string, card: Card): boolean {
         const headCard = this._currentStepStore[0].card;
-        const player = this._getPlayerById(playerId);
+        const roundPlayer = this._getPlayerById(playerId);
+        const allPlayerCards: Card[] = roundPlayer.player.getAllCards();
 
-        if (player.cards.length === 1) {
+        if (allPlayerCards.length === 1) {
             return true;
         }
 
         if (headCard === CARD_SPADE_JACK) {
             // Should take the strongest trump
-            const strongestCard: Card = getStrongestCard(player.cards, this._trumpCard);
+            const strongestCard: Card = getStrongestCard(allPlayerCards, this._trumpCard);
 
             if (strongestCard.suit === this._trumpCard.suit) {
                 return strongestCard === card;
@@ -257,7 +275,7 @@ class Round {
             return true;
         }
 
-        if (player.cards.every((item) => (item.suit !== headCard.suit || item === CARD_SPADE_JACK))) {
+        if (allPlayerCards.every((item) => (item.suit !== headCard.suit || item === CARD_SPADE_JACK))) {
             return true;
         }
 
@@ -269,13 +287,13 @@ class Round {
             throw new Error(ROUND_STEP_WRONG_STATUS);
         }
 
-        const player = this._getCurrentPlayer();
+        const roundPlayer = this._getCurrentPlayer();
 
-        if (playerId !== player.id) {
+        if (playerId !== roundPlayer.player.id) {
             throw new Error(WRONG_PLAYER_ORDER);
         }
 
-        if (!hasCard(player, card)) {
+        if (!roundPlayer.player.hasCard(card)) {
             throw new Error(ROUND_STEP_CARD_NOT_EXIST);
         }
 
@@ -287,7 +305,7 @@ class Round {
                 card,
             });
 
-            player.cards = player.cards.filter((item) => item !== card);
+            roundPlayer.player.deleteCard(card);
         } else {
             throw new Error(ROUND_STEP_CARD_INCORRECT);
         }

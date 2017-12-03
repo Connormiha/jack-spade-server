@@ -11,6 +11,7 @@ import Round, {
 } from 'components/round';
 import type {TypeRoundStoreSnapshot, PredictionCount} from 'components/round';
 import {getRandomCards} from 'utils/collections';
+import {fillPlayersCards} from 'utils/player';
 import type {Card} from 'components/card';
 
 export const MAX_MEMBERS = 6;
@@ -137,21 +138,23 @@ class Game {
         }
 
         let exceptedCards = [];
+        const playersCards = [];
         const countCards: number = this.countCards;
 
-        const players = this._players.map(({id}) => {
+        this._players.forEach(() => {
             const cards = getRandomCards(countCards, exceptedCards);
 
             exceptedCards = exceptedCards.concat(cards);
+            playersCards.push(cards);
+        });
 
-            return {
-                cards,
-                id,
-            };
+        fillPlayersCards({
+            players: this._players,
+            cards: playersCards,
         });
 
         this._currentRound = new Round({
-            players,
+            players: this._players,
             countCards,
             currentOrder: this._currentOrderFirstPlayer,
             trumpCard: getRandomCards(1, countCards === 6 ? [] : exceptedCards)[0],

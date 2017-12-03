@@ -2,6 +2,7 @@
 
 /* eslint no-new: "off" */
 import Round from 'components/round';
+import Player from 'components/player';
 import {
     ROUND_STATUS_NOT_READY, ROUND_STATUS_READY,
 } from 'components/round';
@@ -14,24 +15,31 @@ import {
     ROUND_WRONG_PREDICTION_ORDER_PLAYER,
 } from 'errors';
 
-import pick from 'lodash/pick';
+import {fillPlayersCards} from 'utils/player';
 
 import type {PredictionCount} from 'components/round';
 
-const mockInitialPlayers = [
-    {
-        id: '1',
-        cards: [cards.CARD_SPADE_QUEEN, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
-    },
-    {
-        id: '2',
-        cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
-    },
-    {
-        id: '3',
-        cards: [cards.CARD_HEART_6, cards.CARD_HEART_7, cards.CARD_HEART_8],
-    },
-];
+const mockInitialPlayers = () =>
+    [
+        {
+            id: '1',
+            cards: [cards.CARD_SPADE_QUEEN, cards.CARD_HEART_QUEEN, cards.CARD_HEART_ACE],
+        },
+        {
+            id: '2',
+            cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
+        },
+        {
+            id: '3',
+            cards: [cards.CARD_HEART_6, cards.CARD_HEART_7, cards.CARD_HEART_8],
+        },
+    ].map(({id, cards}) => {
+        const player = new Player({id});
+
+        fillPlayersCards({players: [player], cards: [cards]});
+
+        return player;
+    });
 
 let round;
 
@@ -50,7 +58,7 @@ describe('Round (class)', () => {
     it('should have instance', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
-            players: mockInitialPlayers,
+            players: mockInitialPlayers(),
             currentOrder: 0,
             countCards: 3,
         });
@@ -62,7 +70,7 @@ describe('Round (class)', () => {
         expect(() => {
             new Round({
                 trumpCard: cards.CARD_SPADE_10,
-                players: mockInitialPlayers.slice(0, 1),
+                players: mockInitialPlayers().slice(0, 1),
                 currentOrder: 0,
                 countCards: 3,
             });
@@ -81,7 +89,7 @@ describe('Round (class)', () => {
         expect(() => {
             new Round({
                 trumpCard: cards.CARD_SPADE_10,
-                players: [...mockInitialPlayers, ...mockInitialPlayers, ...mockInitialPlayers].slice(0, 7),
+                players: [...mockInitialPlayers(), ...mockInitialPlayers(), ...mockInitialPlayers()].slice(0, 7),
                 currentOrder: 0,
                 countCards: 3,
             });
@@ -91,7 +99,7 @@ describe('Round (class)', () => {
     it('should status to be ready after all players made prediction', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
-            players: mockInitialPlayers,
+            players: mockInitialPlayers(),
             currentOrder: 0,
             countCards: 3,
         });
@@ -108,7 +116,7 @@ describe('Round (class)', () => {
     it('should raise error on re-prediction', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
-            players: mockInitialPlayers,
+            players: mockInitialPlayers(),
             currentOrder: 0,
             countCards: 3,
         });
@@ -122,7 +130,7 @@ describe('Round (class)', () => {
     it('should raise error on wrong prediction player', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
-            players: mockInitialPlayers,
+            players: mockInitialPlayers(),
             currentOrder: 0,
             countCards: 3,
         });
@@ -134,7 +142,7 @@ describe('Round (class)', () => {
     it('should raise error on round not in not_ready status', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
-            players: mockInitialPlayers,
+            players: mockInitialPlayers(),
             currentOrder: 0,
             countCards: 3,
         });
@@ -151,7 +159,7 @@ describe('Round (class)', () => {
     it('should raise error on wrong prediction count', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
-            players: mockInitialPlayers,
+            players: mockInitialPlayers(),
             currentOrder: 0,
             countCards: 3,
         });
@@ -170,7 +178,7 @@ describe('Round (class)', () => {
     it('should raise error on setPrediction with wrong player id', () => {
         round = new Round({
             trumpCard: cards.CARD_SPADE_10,
-            players: mockInitialPlayers,
+            players: mockInitialPlayers(),
             currentOrder: 0,
             countCards: 3,
         });
@@ -184,7 +192,7 @@ describe('Round (class)', () => {
         expect(() => {
             new Round({
                 trumpCard: cards.CARD_SPADE_10,
-                players: mockInitialPlayers,
+                players: mockInitialPlayers(),
                 currentOrder: 0,
                 countCards: 1,
             });
@@ -195,7 +203,7 @@ describe('Round (class)', () => {
         beforeEach(() => {
             round = new Round({
                 trumpCard: cards.CARD_SPADE_10,
-                players: mockInitialPlayers,
+                players: mockInitialPlayers(),
                 currentOrder: 0,
                 countCards: 3,
             });
@@ -322,7 +330,12 @@ describe('Round (class)', () => {
                         id: '3',
                         cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
                     },
-                ],
+                ].map(({id, cards}) => {
+                    const player = new Player({id});
+
+                    player.fillCards(cards);
+                    return player;
+                }),
                 currentOrder: 0,
                 countCards: 3,
             });
@@ -392,7 +405,12 @@ describe('Round (class)', () => {
                         id: '3',
                         cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
                     },
-                ],
+                ].map(({id, cards}) => {
+                    const player = new Player({id});
+
+                    player.fillCards(cards);
+                    return player;
+                }),
                 currentOrder: 0,
                 countCards: 3,
             });
@@ -475,7 +493,12 @@ describe('Round (class)', () => {
                         id: '3',
                         cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
                     },
-                ],
+                ].map(({id, cards}) => {
+                    const player = new Player({id});
+
+                    player.fillCards(cards);
+                    return player;
+                }),
                 currentOrder: 0,
                 countCards: 3,
             });
@@ -538,7 +561,12 @@ describe('Round (class)', () => {
                         id: '3',
                         cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
                     },
-                ],
+                ].map(({id, cards}) => {
+                    const player = new Player({id});
+
+                    player.fillCards(cards);
+                    return player;
+                }),
                 currentOrder: 2,
                 countCards: 3,
             });
@@ -656,7 +684,12 @@ describe('Round (class) restore game', () => {
                     id: '3',
                     cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_10, cards.CARD_CLUB_9],
                 },
-            ],
+            ].map(({id, cards}) => {
+                const player = new Player({id});
+
+                player.fillCards(cards);
+                return player;
+            }),
             currentOrder: 2,
             countCards: 3,
         });
@@ -689,26 +722,32 @@ describe('Round (class) restore game', () => {
         expect(snapshot.currentStepNumber).toBe(1);
         expect(snapshot.attackOrder).toBe(2);
         expect(snapshot.currentOrder).toBe(1);
-        expect(
-            snapshot.players
-                .map((item) => pick(item, ['points', 'prediction', 'id', 'voted']))
-        ).toEqual([
+        expect(snapshot.players).toEqual([
             {
                 points: 0,
                 prediction: 2,
-                id: '1',
+                player: {
+                    id: '1',
+                    cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_ACE],
+                },
                 voted: true,
             },
             {
                 points: 0,
                 prediction: 0,
-                id: '2',
+                player: {
+                    id: '2',
+                    cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
+                },
                 voted: true,
             },
             {
                 points: 0,
                 prediction: 0,
-                id: '3',
+                player: {
+                    id: '3',
+                    cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_9],
+                },
                 voted: true,
             },
         ]);

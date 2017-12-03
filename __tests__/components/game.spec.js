@@ -9,6 +9,7 @@ import Game, {
     MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS,
 } from 'components/game';
 import Player from 'components/player';
+import * as card from 'components/card';
 
 describe('Game (class)', () => {
     it('should have instance', () => {
@@ -203,6 +204,20 @@ describe('Game (class) full game', () => {
     const player1: Player = new Player({id: '1'});
     const player2: Player = new Player({id: '2'});
     const player3: Player = new Player({id: '3'});
+    const defaultCards = [
+        [
+            card.CARD_CLUB_6, card.CARD_CLUB_7, card.CARD_CLUB_ACE,
+            card.CARD_CLUB_8, card.CARD_CLUB_9, card.CARD_CLUB_10,
+        ],
+        [
+            card.CARD_HEART_6, card.CARD_HEART_7, card.CARD_HEART_ACE,
+            card.CARD_HEART_8, card.CARD_HEART_9, card.CARD_HEART_10,
+        ],
+        [
+            card.CARD_DIAMOND_6, card.CARD_DIAMOND_7, card.CARD_DIAMOND_ACE,
+            card.CARD_DIAMOND_8, card.CARD_DIAMOND_9, card.CARD_DIAMOND_10,
+        ],
+    ];
     let roundId: number;
 
     it('should join players', () => {
@@ -233,12 +248,19 @@ describe('Game (class) full game', () => {
     });
 
     it('should creat steps', () => {
-        // game.createStep({
-        //     playerId: '1',
-        //     card: '1',
-        // });
+        player1.fillCards(defaultCards[0]);
+        player2.fillCards(defaultCards[1]);
+        player3.fillCards(defaultCards[2]);
 
-        // expect(game.roundId).toBe(roundId);
+        [player1, player2, player3].forEach(({id}, index) => {
+            game.createStep({
+                playerId: id,
+                card: defaultCards[index][0],
+                roundId,
+            });
+        });
+
+        expect(game.roundId).toBe(roundId);
     });
 });
 

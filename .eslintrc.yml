@@ -50,6 +50,7 @@ rules:
   array-bracket-newline: off
   object-curly-newline: off
   no-param-reassign: off
+  multiline-comment-style: off
   implicit-arrow-linebreak: off
   no-duplicate-imports: off
   prefer-destructuring: off
