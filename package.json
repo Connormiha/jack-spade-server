@@ -20,6 +20,7 @@
     "prepush": "npm run lint && npm run types && npm test",
     "start": "npm run types && babel-node ./src/run.js",
     "test": "jest --config jest.json",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --config jest.json",
     "types": "flow src",
     "upgrade": "yarn upgrade-interactive --exact --latest"
   },
@@ -27,7 +28,7 @@
     "babel-eslint": "8.0.3",
     "eslint": "4.12.1",
     "eslint-plugin-flowtype": "2.39.1",
-    "eslint-plugin-jest": "21.3.2",
+    "eslint-plugin-jest": "21.4.1",
     "flow-bin": "0.60.1",
     "gulp": "3.9.1",
     "gulp-eslint": "4.0.0",

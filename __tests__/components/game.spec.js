@@ -252,7 +252,12 @@ describe('Game (class) full game', () => {
         player2.fillCards(defaultCards[1]);
         player3.fillCards(defaultCards[2]);
 
-        [player1, player2, player3].forEach(({id}, index) => {
+        let snapshot = game.getSnapshot();
+
+        snapshot.currentRound.trumpCard = card.CARD_CLUB_QUEEN;
+        game.restore(snapshot);
+
+        [player1, player2, player3].forEach(({id}: Player, index) => {
             game.createStep({
                 playerId: id,
                 card: defaultCards[index][0],
@@ -260,7 +265,21 @@ describe('Game (class) full game', () => {
             });
         });
 
+        snapshot = game.getSnapshot();
+
         expect(game.roundId).toBe(roundId);
+        [1, 0, 0].forEach(
+            (points, index) => {
+                const round = snapshot.currentRound;
+                let pointsPlayer;
+
+                if (round) {
+                    pointsPlayer = round.players[index].points;
+                }
+
+                expect(pointsPlayer).toBe(points);
+            }
+        );
     });
 });
 

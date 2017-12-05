@@ -15,8 +15,6 @@ import {
     ROUND_WRONG_PREDICTION_ORDER_PLAYER,
 } from 'errors';
 
-import {fillPlayersCards} from 'utils/player';
-
 import type {PredictionCount} from 'components/round';
 
 const mockInitialPlayers = () =>
@@ -35,8 +33,7 @@ const mockInitialPlayers = () =>
         },
     ].map(({id, cards}) => {
         const player = new Player({id});
-
-        fillPlayersCards({players: [player], cards: [cards]});
+        player.fillCards(cards);
 
         return player;
     });

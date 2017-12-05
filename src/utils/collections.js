@@ -18,7 +18,7 @@ export const getRandomCards = (count: number, except: Array<Card> = []): Array<C
     const cardDesk: Array<Card> = CARD_DECK.filter((item) => !except.includes(item));
 
     for (let i = 0; i < count; i++) {
-        const index = parseInt(Math.random() * (count - 1 - i), 10);
+        const index = parseInt(Math.random() * (cardDesk.length - 1 - i), 10);
 
         result.push(cardDesk[index]);
         cardDesk[index] = cardDesk[cardDesk.length - i - 1];

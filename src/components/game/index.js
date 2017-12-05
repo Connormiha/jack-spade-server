@@ -11,7 +11,6 @@ import Round, {
 } from 'components/round';
 import type {TypeRoundStoreSnapshot, PredictionCount} from 'components/round';
 import {getRandomCards} from 'utils/collections';
-import {fillPlayersCards} from 'utils/player';
 import type {Card} from 'components/card';
 
 export const MAX_MEMBERS = 6;
@@ -28,7 +27,7 @@ export type TypeGamePrediction = {|
     roundId: number,
 |};
 
-export type TypeGameCeateStepParam = {|
+export type TypeGameCreateStepParam = {|
     playerId: string,
     roundId: string,
     card: Card
@@ -138,19 +137,13 @@ class Game {
         }
 
         let exceptedCards = [];
-        const playersCards = [];
         const countCards: number = this.countCards;
 
-        this._players.forEach(() => {
+        this._players.forEach((player) => {
             const cards = getRandomCards(countCards, exceptedCards);
 
             exceptedCards = exceptedCards.concat(cards);
-            playersCards.push(cards);
-        });
-
-        fillPlayersCards({
-            players: this._players,
-            cards: playersCards,
+            player.fillCards(cards);
         });
 
         this._currentRound = new Round({
@@ -174,7 +167,7 @@ class Game {
     /**
      * User tryes make action
      */
-    createStep({playerId, card, roundId}: TypeGameCeateStepParam) {
+    createStep({playerId, card, roundId}: TypeGameCreateStepParam) {
         const currentRound = this._currentRound;
 
         if (!currentRound || currentRound.id !== roundId) {
