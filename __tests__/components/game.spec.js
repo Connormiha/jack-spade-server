@@ -254,7 +254,10 @@ describe('Game (class) full game', () => {
 
         let snapshot = game.getSnapshot();
 
-        snapshot.currentRound.trumpCard = card.CARD_CLUB_QUEEN;
+        if (snapshot.currentRound) {
+            snapshot.currentRound.trumpCard = card.CARD_CLUB_QUEEN;
+        }
+
         game.restore(snapshot);
 
         [player1, player2, player3].forEach(({id}: Player, index) => {

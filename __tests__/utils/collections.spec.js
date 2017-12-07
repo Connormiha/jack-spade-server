@@ -30,6 +30,29 @@ describe('Utils/collections', () => {
             expect(cards.length).toBe(36);
             expect(uniq(cards).length).toBe(36);
         });
+
+        it('should return honest random single card', () => {
+            const cardsCount: WeakMap<Card, number> = new Map();
+            const countCatches = 3000;
+
+            card.CARD_DECK.forEach((card: Card) => {
+                cardsCount.set(card, 0);
+            });
+
+            for (let i = 0; i < countCatches; i++) {
+                const randomCard = getRandomCards(1)[0];
+                cardsCount.set(randomCard, cardsCount.get(randomCard) + 1);
+            }
+
+            const strictProbability = countCatches / card.CARD_DECK.length;
+            const minCount = strictProbability - (strictProbability / 100 * 65);
+            const maxCount = strictProbability + (strictProbability / 100 * 65);
+
+            card.CARD_DECK.forEach((card: Card) => {
+                expect(cardsCount.get(card)).not.toBeLessThan(minCount);
+                expect(cardsCount.get(card)).not.toBeGreaterThan(maxCount);
+            });
+        });
     });
 
     describe('getStrongestCard', () => {

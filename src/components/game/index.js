@@ -29,7 +29,7 @@ export type TypeGamePrediction = {|
 
 export type TypeGameCreateStepParam = {|
     playerId: string,
-    roundId: string,
+    roundId: number,
     card: Card
 |};
 
