@@ -3,6 +3,7 @@
 /* eslint no-new: "off" */
 import Round from 'components/round';
 import Player from 'components/player';
+import type {PredictionCount} from 'components/player';
 import {
     ROUND_STATUS_NOT_READY, ROUND_STATUS_READY,
 } from 'components/round';
@@ -14,8 +15,6 @@ import {
     WRONG_PLAYERS_COUNT, ROUND_ALREADY_STARTED, ROUND_WRONG_PREDICTION_COUNT, PLAYER_NOT_FOUND,
     ROUND_WRONG_PREDICTION_ORDER_PLAYER,
 } from 'errors';
-
-import type {PredictionCount} from 'components/round';
 
 const mockInitialPlayers = () =>
     [
@@ -467,9 +466,9 @@ describe('Round (class)', () => {
             const snapshot = round.getSnapshot();
 
             expect(snapshot.currentOrder).toBe(0);
-            expect(snapshot.players[0].points).toBe(1);
-            expect(snapshot.players[1].points).toBe(0);
-            expect(snapshot.players[2].points).toBe(0);
+            expect(snapshot.players[0].roundWinsCount).toBe(1);
+            expect(snapshot.players[1].roundWinsCount).toBe(0);
+            expect(snapshot.players[2].roundWinsCount).toBe(0);
         });
     });
 
@@ -535,9 +534,9 @@ describe('Round (class)', () => {
 
             expect(snapshot.currentOrder).toBe(0);
             expect(round.status).toBe(ROUND_STATUS_READY);
-            expect(snapshot.players[0].points).toBe(1);
-            expect(snapshot.players[1].points).toBe(0);
-            expect(snapshot.players[2].points).toBe(0);
+            expect(snapshot.players[0].roundWinsCount).toBe(1);
+            expect(snapshot.players[1].roundWinsCount).toBe(0);
+            expect(snapshot.players[2].roundWinsCount).toBe(0);
         });
     });
 
@@ -625,9 +624,9 @@ describe('Round (class)', () => {
 
             const snapshot = round.getSnapshot();
 
-            expect(snapshot.players[0].points).toBe(3);
-            expect(snapshot.players[1].points).toBe(0);
-            expect(snapshot.players[2].points).toBe(0);
+            expect(snapshot.players[0].roundWinsCount).toBe(3);
+            expect(snapshot.players[1].roundWinsCount).toBe(0);
+            expect(snapshot.players[2].roundWinsCount).toBe(0);
         });
 
         it('shouldn\'t allow use old cards', () => {
@@ -721,31 +720,28 @@ describe('Round (class) restore game', () => {
         expect(snapshot.currentOrder).toBe(1);
         expect(snapshot.players).toEqual([
             {
+                roundWinsCount: 0,
+                roundPrediction: 2,
                 points: 0,
-                prediction: 2,
-                player: {
-                    id: '1',
-                    cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_ACE],
-                },
-                voted: true,
+                id: '1',
+                cards: [cards.CARD_SPADE_JACK, cards.CARD_HEART_ACE],
+                isRoundVoted: true,
             },
             {
+                roundWinsCount: 0,
+                roundPrediction: 0,
                 points: 0,
-                prediction: 0,
-                player: {
-                    id: '2',
-                    cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
-                },
-                voted: true,
+                id: '2',
+                cards: [cards.CARD_SPADE_KING, cards.CARD_HEART_10, cards.CARD_HEART_9],
+                isRoundVoted: true,
             },
             {
+                roundWinsCount: 0,
+                roundPrediction: 0,
                 points: 0,
-                prediction: 0,
-                player: {
-                    id: '3',
-                    cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_9],
-                },
-                voted: true,
+                id: '3',
+                cards: [cards.CARD_CLUB_KING, cards.CARD_CLUB_9],
+                isRoundVoted: true,
             },
         ]);
         expect(snapshot.currentStepStore).toEqual([

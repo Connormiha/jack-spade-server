@@ -127,10 +127,16 @@ describe('Game (class) countCards', () => {
                     {
                         id: '1',
                         cards: [],
+                        roundWinsCount: 0,
+                        roundPrediction: 0,
+                        isRoundVoted: false,
                     },
                     {
                         id: '2',
                         cards: [],
+                        roundWinsCount: 0,
+                        roundPrediction: 0,
+                        isRoundVoted: false,
                     },
                 ],
             });
@@ -247,7 +253,7 @@ describe('Game (class) full game', () => {
         expect(game.roundId).toBe(roundId);
     });
 
-    it('should creat steps', () => {
+    it('should first creat steps', () => {
         player1.fillCards(defaultCards[0]);
         player2.fillCards(defaultCards[1]);
         player3.fillCards(defaultCards[2]);
@@ -277,7 +283,7 @@ describe('Game (class) full game', () => {
                 let pointsPlayer;
 
                 if (round) {
-                    pointsPlayer = round.players[index].points;
+                    pointsPlayer = round.players[index].roundWinsCount;
                 }
 
                 expect(pointsPlayer).toBe(points);

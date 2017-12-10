@@ -5,11 +5,11 @@ import {
     GAME_CURRENT_ROUND_NOT_FINISHED, GAME_IS_FINISHED, GAME_WRONG_ROUND,
 } from 'errors';
 import Player from 'components/player';
-import type {TypePlayerStoreSnapshot} from 'components/player';
+import type {TypePlayerStoreSnapshot, PredictionCount} from 'components/player';
 import Round, {
     ROUND_STATUS_FINISHED,
 } from 'components/round';
-import type {TypeRoundStoreSnapshot, PredictionCount} from 'components/round';
+import type {TypeRoundStoreSnapshot} from 'components/round';
 import {getRandomCards} from 'utils/collections';
 import type {Card} from 'components/card';
 
@@ -113,6 +113,9 @@ class Game {
 
             currentRound.restore(params.currentRound);
             this._currentRound = currentRound;
+            this._players = this._currentRound._players;
+        } else {
+            this._players = params.players.map((item) => new Player().restore(item));
         }
 
         this._id = params.id;
@@ -120,7 +123,6 @@ class Game {
         this._currentOrderFirstPlayer = params.currentOrderFirstPlayer;
         this._mainPlayerId = params.mainPlayerId;
         this._status = params.status;
-        this._players = params.players.map((item) => new Player().restore(item));
     }
 
     nextRound() {
