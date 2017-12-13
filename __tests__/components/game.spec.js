@@ -207,24 +207,110 @@ describe('Game (class) setPrediction', () => {
 
 describe('Game (class) full game', () => {
     const game: Game = new Game({id: '1'});
-    const player1: Player = new Player({id: '1'});
-    const player2: Player = new Player({id: '2'});
-    const player3: Player = new Player({id: '3'});
-    const defaultCards = [
-        [
+    let player1: Player = new Player({id: '1'});
+    let player2: Player = new Player({id: '2'});
+    let player3: Player = new Player({id: '3'});
+    const defaultCards = {
+        1: [
             card.CARD_CLUB_6, card.CARD_CLUB_7, card.CARD_CLUB_ACE,
             card.CARD_CLUB_8, card.CARD_CLUB_9, card.CARD_CLUB_10,
         ],
-        [
+        2: [
             card.CARD_HEART_6, card.CARD_HEART_7, card.CARD_HEART_ACE,
             card.CARD_HEART_8, card.CARD_HEART_9, card.CARD_HEART_10,
         ],
-        [
+        3: [
             card.CARD_DIAMOND_6, card.CARD_DIAMOND_7, card.CARD_DIAMOND_ACE,
             card.CARD_DIAMOND_8, card.CARD_DIAMOND_9, card.CARD_DIAMOND_10,
         ],
-    ];
+    };
     let roundId: number;
+
+    afterEach(() => {
+        player1 = game._players[0];
+        player2 = game._players[1];
+        player3 = game._players[2];
+    });
+
+    type TypeStep = {
+        players: Array<{
+            id: string,
+            points: number,
+            roundWinsCount: number,
+        }>,
+        size: number,
+    };
+
+    const simulateRound = (steps: TypeStep) => {
+        it('should set predictions', () => {
+            game.nextRound();
+
+            roundId = game.roundId;
+
+            for (const {id} of steps.players) {
+                game.setPrediction({
+                    roundId, playerId: id, count: steps.size,
+                });
+            }
+
+            expect(game.roundId).toBe(roundId);
+        });
+
+        it('should creat steps', () => {
+            player1.fillCards(defaultCards[1].slice(0, steps.size));
+            player2.fillCards(defaultCards[2].slice(0, steps.size));
+            player3.fillCards(defaultCards[3].slice(0, steps.size));
+
+            let snapshot = game.getSnapshot();
+
+            if (snapshot.currentRound) {
+                snapshot.currentRound.trumpCard = card.CARD_CLUB_QUEEN;
+            }
+
+            game.restore(snapshot);
+            for (const player of steps.players) {
+                game.createStep({
+                    playerId: player.id,
+                    card: defaultCards[player.id][0],
+                    roundId,
+                });
+            }
+
+            for (let i = 1; i < steps.size; i++) {
+                for (let j = 1; j < 4; j++) {
+                    game.createStep({
+                        playerId: String(j),
+                        card: defaultCards[j][i],
+                        roundId,
+                    });
+                }
+            }
+
+            snapshot = game.getSnapshot();
+
+            expect(game.roundId).toBe(roundId);
+
+            steps.players.forEach(
+                ({roundWinsCount, points, id}) => {
+                    const round = snapshot.currentRound;
+                    let pointsPlayer;
+                    let roundWinsCountPlayer;
+
+                    if (round) {
+                        const player = round.players.find((item) => id === item.id);
+
+                        if (player) {
+                            roundWinsCountPlayer = player.roundWinsCount;
+                            pointsPlayer = player.points;
+                        }
+                    }
+
+                    expect(pointsPlayer).toBe(points);
+                    expect(roundWinsCount).toBe(roundWinsCountPlayer);
+                }
+            );
+        });
+    };
 
     it('should join players', () => {
         game.joinPlayer(player1);
@@ -234,61 +320,26 @@ describe('Game (class) full game', () => {
         expect(game.countMembers).toBe(3);
     });
 
-    it('should set predictions', () => {
-        game.nextRound();
-
-        roundId = game.roundId;
-
-        game.setPrediction({
-            roundId, playerId: '1', count: 1,
+    describe('should play round 1', () => {
+        simulateRound({
+            players: [
+                {id: '1', points: 10, roundWinsCount: 1},
+                {id: '2', points: -10, roundWinsCount: 0},
+                {id: '3', points: -10, roundWinsCount: 0},
+            ],
+            size: 1,
         });
-
-        game.setPrediction({
-            roundId, playerId: '2', count: 1,
-        });
-        game.setPrediction({
-            roundId, playerId: '3', count: 1,
-        });
-
-        expect(game.roundId).toBe(roundId);
     });
 
-    it('should first creat steps', () => {
-        player1.fillCards(defaultCards[0]);
-        player2.fillCards(defaultCards[1]);
-        player3.fillCards(defaultCards[2]);
-
-        let snapshot = game.getSnapshot();
-
-        if (snapshot.currentRound) {
-            snapshot.currentRound.trumpCard = card.CARD_CLUB_QUEEN;
-        }
-
-        game.restore(snapshot);
-
-        [player1, player2, player3].forEach(({id}: Player, index) => {
-            game.createStep({
-                playerId: id,
-                card: defaultCards[index][0],
-                roundId,
-            });
+    describe('should play round 2', () => {
+        simulateRound({
+            players: [
+                {id: '2', points: -30, roundWinsCount: 0},
+                {id: '3', points: -30, roundWinsCount: 0},
+                {id: '1', points: 30, roundWinsCount: 2},
+            ],
+            size: 2,
         });
-
-        snapshot = game.getSnapshot();
-
-        expect(game.roundId).toBe(roundId);
-        [1, 0, 0].forEach(
-            (points, index) => {
-                const round = snapshot.currentRound;
-                let pointsPlayer;
-
-                if (round) {
-                    pointsPlayer = round.players[index].roundWinsCount;
-                }
-
-                expect(pointsPlayer).toBe(points);
-            }
-        );
     });
 });
 
