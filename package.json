@@ -33,7 +33,7 @@
     "gulp": "3.9.1",
     "gulp-eslint": "4.0.0",
     "husky": "0.14.3",
-    "jest": "21.2.1"
+    "jest": "22.0.1"
   },
   "dependencies": {
     "app-module-path": "2.2.0",

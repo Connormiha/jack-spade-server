@@ -180,7 +180,7 @@ class Game {
 
         if (currentRound.status === ROUND_STATUS_FINISHED) {
             this._calcPoints();
-            if (this.__currentRoundNumber === 13) {
+            if (this._currentRoundNumber === 13) {
                 this._status = GAME_STATUS_FINISHED;
             } else {
                 this._currentRoundNumber++;
@@ -190,8 +190,8 @@ class Game {
     }
 
     _calcPoints() {
-        const FINE_VALUE = this.__currentRoundNumber === 13 ? 30 : 10;
-        const PASS_VALUE = this.__currentRoundNumber === 13 ? 15 : 5;
+        const FINE_VALUE = this._currentRoundNumber === 13 ? 30 : 10;
+        const PASS_VALUE = this._currentRoundNumber === 13 ? 15 : 5;
 
         this._players.forEach((player: Player) => {
             if (player.roundPrediction === player.roundWinsCount) {
