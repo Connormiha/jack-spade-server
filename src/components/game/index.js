@@ -192,6 +192,7 @@ class Game {
     _calcPoints() {
         const FINE_VALUE = this._currentRoundNumber === 13 ? 30 : 10;
         const PASS_VALUE = this._currentRoundNumber === 13 ? 15 : 5;
+        const OVERFLOW_VALUE = this._currentRoundNumber === 13 ? 5 : 1;
 
         this._players.forEach((player: Player) => {
             if (player.roundPrediction === player.roundWinsCount) {
@@ -201,7 +202,7 @@ class Game {
                     player.points += PASS_VALUE;
                 }
             } else if (player.roundPrediction < player.roundWinsCount) {
-                player.points += player.roundPrediction;
+                player.points += player.roundWinsCount * OVERFLOW_VALUE;
             } else {
                 player.points -= (player.roundPrediction - player.roundWinsCount) * FINE_VALUE;
             }

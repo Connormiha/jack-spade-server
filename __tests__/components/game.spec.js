@@ -3,7 +3,7 @@
 import {
     TOO_MACH_MEMBERS, GAME_PLAYER_ALREADY_EXIST, TOO_FEW_MEMBERS,
     GAME_CURRENT_ROUND_NOT_FINISHED, ROUND_WRONG_PREDICTION_ORDER_PLAYER,
-    ROUND_ALREADY_STARTED,
+    ROUND_ALREADY_STARTED, GAME_IS_FINISHED, GAME_WRONG_ROUND,
 } from 'errors';
 import Game, {
     MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS, GAME_STATUS_FINISHED,
@@ -171,6 +171,18 @@ describe('Game (class) setPrediction', () => {
         }).toThrowError(ROUND_WRONG_PREDICTION_ORDER_PLAYER);
     });
 
+    it('should throw error on create step without round', () => {
+        game.joinPlayer(player1);
+        game.joinPlayer(player2);
+        game.nextRound();
+
+        expect(() => {
+            game.createStep({
+                playerId: player1.id, card: card.CARD_CLUB_10, roundId: 10,
+            });
+        }).toThrowError(GAME_WRONG_ROUND);
+    });
+
     it('should corrent sets prediction', () => {
         game.joinPlayer(player1);
         game.joinPlayer(player2);
@@ -207,7 +219,7 @@ describe('Game (class) setPrediction', () => {
 
 describe('Game (class) full game', () => {
     // simple game. 1st player always win
-    const game: Game = new Game({id: '1'});
+    let game: Game;
     let player1: Player = new Player({id: '1'});
     let player2: Player = new Player({id: '2'});
     let player3: Player = new Player({id: '3'});
@@ -242,7 +254,7 @@ describe('Game (class) full game', () => {
         size: number,
     };
 
-    const simulateRound = (steps: TypeStep) => {
+    const simulateRound = (steps: TypeStep, predictionCount: any) => {
         it('should set predictions', () => {
             game.nextRound();
 
@@ -250,7 +262,7 @@ describe('Game (class) full game', () => {
 
             for (const {id} of steps.players) {
                 game.setPrediction({
-                    roundId, playerId: id, count: steps.size,
+                    roundId, playerId: id, count: predictionCount,
                 });
             }
 
@@ -313,15 +325,20 @@ describe('Game (class) full game', () => {
         });
     };
 
-    it('should join players', () => {
-        game.joinPlayer(player1);
-        game.joinPlayer(player2);
-        game.joinPlayer(player3);
+    describe('round with max players\'s prediction', () => {
+        it('should join players', () => {
+            game = new Game({id: '1'});
+            player1 = new Player({id: '1'});
+            player2 = new Player({id: '2'});
+            player3 = new Player({id: '3'});
 
-        expect(game.countMembers).toBe(3);
-    });
+            game.joinPlayer(player1);
+            game.joinPlayer(player2);
+            game.joinPlayer(player3);
 
-    describe('round', () => {
+            expect(game.countMembers).toBe(3);
+        });
+
         [
             {
                 players: [
@@ -429,12 +446,151 @@ describe('Game (class) full game', () => {
             },
         ].forEach((item, i) =>
             describe(`round ${i + 1}`, () =>
-                simulateRound(item)
+                simulateRound(item, item.size)
             )
         );
 
         it('should have status finished', () => {
             expect(game.status).toBe(GAME_STATUS_FINISHED);
+        });
+
+        it('should throw error on nextRound with finished game', () => {
+            expect(() => game.nextRound()).toThrowError(GAME_IS_FINISHED);
+        });
+    });
+
+    describe('round with min players\'s prediction', () => {
+        it('should join players', () => {
+            game = new Game({id: '1'});
+
+            player1 = new Player({id: '1'});
+            player2 = new Player({id: '2'});
+            player3 = new Player({id: '3'});
+
+            game.joinPlayer(player1);
+            game.joinPlayer(player2);
+            game.joinPlayer(player3);
+
+            expect(game.countMembers).toBe(3);
+        });
+
+        [
+            {
+                players: [
+                    {id: '1', points: 1, roundWinsCount: 1},
+                    {id: '2', points: 5, roundWinsCount: 0},
+                    {id: '3', points: 5, roundWinsCount: 0},
+                ],
+                size: 1,
+            },
+            {
+                players: [
+                    {id: '2', points: 10, roundWinsCount: 0},
+                    {id: '3', points: 10, roundWinsCount: 0},
+                    {id: '1', points: 3, roundWinsCount: 2},
+                ],
+                size: 2,
+            },
+            {
+                players: [
+                    {id: '3', points: 15, roundWinsCount: 0},
+                    {id: '1', points: 6, roundWinsCount: 3},
+                    {id: '2', points: 15, roundWinsCount: 0},
+                ],
+                size: 3,
+            },
+            {
+                players: [
+                    {id: '1', points: 10, roundWinsCount: 4},
+                    {id: '2', points: 20, roundWinsCount: 0},
+                    {id: '3', points: 20, roundWinsCount: 0},
+                ],
+                size: 4,
+            },
+            {
+                players: [
+                    {id: '2', points: 25, roundWinsCount: 0},
+                    {id: '3', points: 25, roundWinsCount: 0},
+                    {id: '1', points: 15, roundWinsCount: 5},
+                ],
+                size: 5,
+            },
+            {
+                players: [
+                    {id: '3', points: 30, roundWinsCount: 0},
+                    {id: '1', points: 21, roundWinsCount: 6},
+                    {id: '2', points: 30, roundWinsCount: 0},
+                ],
+                size: 6,
+            },
+            {
+                players: [
+                    {id: '1', points: 27, roundWinsCount: 6},
+                    {id: '2', points: 35, roundWinsCount: 0},
+                    {id: '3', points: 35, roundWinsCount: 0},
+                ],
+                size: 6,
+            },
+            {
+                players: [
+                    {id: '2', points: 40, roundWinsCount: 0},
+                    {id: '3', points: 40, roundWinsCount: 0},
+                    {id: '1', points: 32, roundWinsCount: 5},
+                ],
+                size: 5,
+            },
+            {
+                players: [
+                    {id: '3', points: 45, roundWinsCount: 0},
+                    {id: '1', points: 36, roundWinsCount: 4},
+                    {id: '2', points: 45, roundWinsCount: 0},
+                ],
+                size: 4,
+            },
+            {
+                players: [
+                    {id: '1', points: 39, roundWinsCount: 3},
+                    {id: '2', points: 50, roundWinsCount: 0},
+                    {id: '3', points: 50, roundWinsCount: 0},
+                ],
+                size: 3,
+            },
+            {
+                players: [
+                    {id: '2', points: 55, roundWinsCount: 0},
+                    {id: '3', points: 55, roundWinsCount: 0},
+                    {id: '1', points: 41, roundWinsCount: 2},
+                ],
+                size: 2,
+            },
+            {
+                players: [
+                    {id: '3', points: 60, roundWinsCount: 0},
+                    {id: '1', points: 42, roundWinsCount: 1},
+                    {id: '2', points: 60, roundWinsCount: 0},
+                ],
+                size: 1,
+            },
+            {
+                players: [
+                    {id: '1', points: 47, roundWinsCount: 1},
+                    {id: '2', points: 75, roundWinsCount: 0},
+                    {id: '3', points: 75, roundWinsCount: 0},
+                ],
+                size: 1,
+            },
+        ].forEach((item, i) =>
+            describe(`round ${i + 1}`, () =>
+                simulateRound(item, 0)
+            )
+        );
+
+        it('should have status finished', () => {
+            expect(game.status).toBe(GAME_STATUS_FINISHED);
+        });
+
+        it('should throw error on nextRound with finished game', () => {
+            expect(() => game.nextRound()).toThrowError(GAME_IS_FINISHED);
         });
     });
 });
