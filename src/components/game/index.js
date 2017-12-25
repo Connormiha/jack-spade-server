@@ -44,14 +44,12 @@ export type TypeGameStoreSnapshot = {|
     currentRound: TypeRoundStoreSnapshot | null,
     currentRoundNumber: roundNumber,
     currentOrderFirstPlayer: number,
-    mainPlayerId: string,
     players: Array<TypePlayerStoreSnapshot>,
     status: gameStatus
 |};
 
 class Game {
     _id: string;
-    _mainPlayerId: string;
     _players: Array<Player>;
     _currentRound: Round | null;
     _currentOrderFirstPlayer: number;
@@ -83,10 +81,6 @@ class Game {
         }
 
         this._players.push(player);
-
-        if (this.countMembers === 1) {
-            this._mainPlayerId = player.id;
-        }
     }
 
     _hasPlayer(id: string): boolean {
@@ -100,7 +94,6 @@ class Game {
             currentRound,
             currentRoundNumber: this._currentRoundNumber,
             currentOrderFirstPlayer: this._currentOrderFirstPlayer,
-            mainPlayerId: this._mainPlayerId,
             status: this._status,
             id: this._id,
             players: this._players.map((item) => item.getSnapshot()),
@@ -121,7 +114,6 @@ class Game {
         this._id = params.id;
         this._currentRoundNumber = params.currentRoundNumber;
         this._currentOrderFirstPlayer = params.currentOrderFirstPlayer;
-        this._mainPlayerId = params.mainPlayerId;
         this._status = params.status;
     }
 

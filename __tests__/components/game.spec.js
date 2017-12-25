@@ -8,6 +8,7 @@ import {
 import Game, {
     MAX_MEMBERS, GAME_STATUS_WAITING, GAME_STATUS_IN_PROGRESS, GAME_STATUS_FINISHED,
 } from 'components/game';
+import {ROUND_STATUS_READY} from 'components/round';
 import Player from 'components/player';
 import * as card from 'components/card';
 
@@ -595,23 +596,85 @@ describe('Game (class) full game', () => {
     });
 });
 
-// describe('Game (class) restore', () => {
-//     let game: Game;
-//     let player1: Player;
-//     let player2: Player;
-//
-//     beforeEach(() => {
-//         game = new Game({id: '1'});
-//         player1 = new Player({id: '1'});
-//         player2 = new Player({id: '2'});
-//     });
-//
-//     it('should restore 1st round', () => {
-//         game.joinPlayer(player1);
-//         game.joinPlayer(player2);
-//         game.nextRound();
-//         game.setPrediction({
-//
-//         });
-//     });
-// });
+describe('Game (class) restore', () => {
+    let game: Game;
+    let player1: Player;
+    let player2: Player;
+
+    beforeEach(() => {
+        game = new Game({id: '1'});
+        player1 = new Player({id: '1'});
+        player2 = new Player({id: '2'});
+    });
+
+    it('should restore 1st round', () => {
+        game.joinPlayer(player1);
+        game.joinPlayer(player2);
+        game.nextRound();
+        const roundId = game.roundId;
+
+        game.setPrediction({
+            playerId: '1', count: 1, roundId,
+        });
+
+        game.setPrediction({
+            playerId: '2', count: 1, roundId,
+        });
+
+        const snapshot = game.getSnapshot();
+
+        expect(snapshot).toEqual({
+            id: '1',
+            status: GAME_STATUS_IN_PROGRESS,
+            currentRoundNumber: 1,
+            currentOrderFirstPlayer: 0,
+            currentRound: {
+                attackOrder: 0,
+                countCards: 1,
+                currentOrder: 0,
+                currentPredictionOrder: 0,
+                currentStepNumber: 1,
+                currentStepStore: [],
+                id: roundId,
+                status: ROUND_STATUS_READY,
+                trumpCard: snapshot.currentRound.trumpCard,
+                players: [
+                    {
+                        cards: player1.getAllCards(),
+                        id: '1',
+                        isRoundVoted: true,
+                        points: 0,
+                        roundPrediction: 1,
+                        roundWinsCount: 0,
+                    },
+                    {
+                        cards: player2.getAllCards(),
+                        id: '2',
+                        isRoundVoted: true,
+                        points: 0,
+                        roundPrediction: 1,
+                        roundWinsCount: 0,
+                    },
+                ],
+            },
+            players: [
+                {
+                    cards: player1.getAllCards(),
+                    id: '1',
+                    isRoundVoted: true,
+                    points: 0,
+                    roundPrediction: 1,
+                    roundWinsCount: 0,
+                },
+                {
+                    cards: player2.getAllCards(),
+                    id: '2',
+                    isRoundVoted: true,
+                    points: 0,
+                    roundPrediction: 1,
+                    roundWinsCount: 0,
+                },
+            ],
+        });
+    });
+});
