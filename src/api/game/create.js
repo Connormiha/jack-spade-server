@@ -1,6 +1,6 @@
 // @flow
 
-import createGame from 'actions/createGame';
+import createGame from 'actions/games/createGame';
 
 const callback = (req: express$Request, res: express$Response): void => {
     const game = createGame();

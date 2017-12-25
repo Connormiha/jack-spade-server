@@ -1,5 +1,5 @@
 // @flow
-import addPlayer from 'actions/addPlayer';
+import addPlayer from 'actions/game/addPlayer';
 
 const callback = (req: express$Request, res: express$Response): void => {
     const body: {gameId: string} = req.body;

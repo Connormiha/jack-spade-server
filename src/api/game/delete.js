@@ -1,6 +1,6 @@
 // @flow
 
-import deleteGame from 'actions/deleteGame';
+import deleteGame from 'actions/games/deleteGame';
 
 const callback = (req: express$Request, res: express$Response): void => {
     const body: {id: string} = req.body;

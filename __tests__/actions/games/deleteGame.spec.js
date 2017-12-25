@@ -2,7 +2,7 @@
 
 import Game from 'components/game';
 import games from 'components/games';
-import deleteGame from 'actions/deleteGame';
+import deleteGame from 'actions/games/deleteGame';
 
 describe('Actions deleteGame', () => {
     afterEach(() => {
