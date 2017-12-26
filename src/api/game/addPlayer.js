@@ -1,21 +1,28 @@
 // @flow
-import addPlayer from 'actions/game/addPlayer';
 
-const callback = (req: express$Request, res: express$Response): void => {
-    const body: {gameId: string} = req.body;
+import addPlayer from 'actions/game/addPlayer';
+import type {TypeResult} from 'components/request/types';
+
+type TypeBodyAddPlayer = {
+    gameId: string,
+};
+
+const callback = (body: TypeBodyAddPlayer): TypeResult => {
     let player;
 
     try {
         player = addPlayer(body.gameId);
     } catch (e) {
-        res.status(400);
-        res.json({error: e.message});
-        return;
+        return {
+            message: {error: e.message},
+            status: 400,
+        };
     }
 
-    res.json({
-        id: player.id,
-    });
+    return {
+        message: {id: player.id},
+        status: 200,
+    };
 };
 
 export default callback;

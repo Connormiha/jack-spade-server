@@ -1,0 +1,15 @@
+// @flow
+
+type TypeResultValue = string | number | boolean
+    | string[] | number[];
+
+export type TypeBody = {
+    [key: string]: TypeResultValue,
+};
+
+export type TypeResult = {
+    status: number,
+    message?: {
+        [key: string]: TypeResultValue,
+    },
+};

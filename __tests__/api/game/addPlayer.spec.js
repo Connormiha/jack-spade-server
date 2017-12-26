@@ -3,7 +3,6 @@
 import games from 'components/games';
 import Game from 'components/game';
 import apiAddPlayer from 'api/game/addPlayer';
-import {anyObject} from 'mock/objects';
 import {MAX_MEMBERS} from 'components/game';
 import {TOO_MACH_MEMBERS, GAME_NOT_FOUND} from 'errors';
 
@@ -17,14 +16,9 @@ describe('API game/addPlayer', () => {
 
         games.add(game);
 
-        const json = jest.fn();
-        const status = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {json, status});
-        const request: express$Request = Object.assign(anyObject(), {body: {gameId: '1'}});
+        const result = apiAddPlayer({gameId: '1'});
 
-        apiAddPlayer(request, response);
-
-        expect(json).toHaveBeenCalledTimes(1);
+        expect(result.status).toBe(200);
         expect(game.countMembers).toBe(1);
     });
 
@@ -33,15 +27,12 @@ describe('API game/addPlayer', () => {
 
         games.add(game);
 
-        const json = jest.fn();
-        const status = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {json, status});
-        const request: express$Request = Object.assign(anyObject(), {body: {gameId: '2'}});
+        const result = apiAddPlayer({gameId: '2'});
 
-        apiAddPlayer(request, response);
-
-        expect(json).toHaveBeenCalledTimes(1);
-        expect(json).toHaveBeenCalledWith({error: GAME_NOT_FOUND});
+        expect(result).toEqual({
+            message: {error: GAME_NOT_FOUND},
+            status: 400,
+        });
         expect(game.countMembers).toBe(0);
     });
 
@@ -50,33 +41,29 @@ describe('API game/addPlayer', () => {
 
         games.add(game);
 
-        let json: any;
-        let status: any;
-        let response: express$Response;
-        let request: express$Request;
+        // let json: any;
+        // let status: any;
+        // let response: express$Response;
+        // let request: express$Request;
 
         for (let i = 0; i < MAX_MEMBERS; i++) {
-            json = jest.fn();
-            status = jest.fn();
-            response = Object.assign(anyObject(), {json, status});
-            request = Object.assign(anyObject(), {body: {gameId: '1'}});
+            // json = jest.fn();
+            // status = jest.fn();
+            // response = Object.assign(anyObject(), {json, status});
+            // request = Object.assign(anyObject(), {body: {gameId: '1'}});
 
-            apiAddPlayer(request, response);
+            const result = apiAddPlayer({gameId: '1'});
 
-            expect(json).toHaveBeenCalledTimes(1);
+            expect(result.status).toBe(200);
             expect(game.countMembers).toBe(i + 1);
         }
 
-        json = jest.fn();
-        status = jest.fn();
-        response = Object.assign(anyObject(), {json, status});
-        request = Object.assign(anyObject(), {body: {gameId: '1'}});
-
-        apiAddPlayer(request, response);
+        const result = apiAddPlayer({gameId: '1'});
 
         expect(game.countMembers).toBe(MAX_MEMBERS);
-        expect(json).toHaveBeenCalledTimes(1);
-        expect(json).toHaveBeenCalledWith({error: TOO_MACH_MEMBERS});
-        expect(status).toHaveBeenCalledWith(400);
+        expect(result).toEqual({
+            status: 400,
+            message: {error: TOO_MACH_MEMBERS},
+        });
     });
 });
