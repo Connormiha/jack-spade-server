@@ -3,7 +3,6 @@
 import users from 'components/users';
 import User from 'components/user';
 import apiDeleteUser from 'api/user/delete';
-import {anyObject} from 'mock/objects';
 
 describe('API user/delete', () => {
     afterEach(() => {
@@ -11,16 +10,9 @@ describe('API user/delete', () => {
     });
 
     it('should raise error', () => {
-        const end = jest.fn();
-        const status = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {end, status});
-        const request: express$Request = Object.assign(anyObject(), {body: {id: 1}});
+        const result = apiDeleteUser({id: 1});
 
-        apiDeleteUser(request, response);
-
-        expect(end).toHaveBeenCalledTimes(1);
-        expect(status).toHaveBeenCalledWith(400);
-        expect(status).toHaveBeenCalledTimes(1);
+        expect(result.status).toBe(400);
         expect(users.count).toBe(0);
     });
 
@@ -29,18 +21,11 @@ describe('API user/delete', () => {
 
         users.add(user);
 
-        const end = jest.fn();
-        const status = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {end, status});
-        const request: express$Request = Object.assign(anyObject(), {body: {id: user.id}});
-
         expect(users.count).toBe(1);
 
-        apiDeleteUser(request, response);
+        const result = apiDeleteUser({id: user.id});
 
-        expect(end).toHaveBeenCalledTimes(1);
-        expect(status).toHaveBeenCalledWith(204);
-        expect(status).toHaveBeenCalledTimes(1);
+        expect(result.status).toBe(204);
         expect(users.count).toBe(0);
     });
 });

@@ -2,7 +2,6 @@
 
 import games from 'components/games';
 import apiCreateGame from 'api/game/create';
-import {anyObject} from 'mock/objects';
 
 describe('API game/create', () => {
     afterEach(() => {
@@ -10,13 +9,10 @@ describe('API game/create', () => {
     });
 
     it('should create game', () => {
-        const json = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {json});
-        const request: express$Request = anyObject();
+        const result = apiCreateGame();
 
-        apiCreateGame(request, response);
-
-        expect(json).toHaveBeenCalledTimes(1);
+        expect(result.status).toBe(200);
+        expect(result.message.id).toBeTruthy();
         expect(games.count).toBe(1);
     });
 });

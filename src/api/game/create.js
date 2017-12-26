@@ -1,13 +1,22 @@
 // @flow
 
 import createGame from 'actions/games/createGame';
+import type {TypeResult} from 'components/request/types';
 
-const callback = (req: express$Request, res: express$Response): void => {
+// @todo
+// type TypeBody = {
+//     [string]: any;
+// };
+
+const callback = (): TypeResult => {
     const game = createGame();
 
-    res.json({
-        id: game.id,
-    });
+    return {
+        status: 200,
+        message: {
+            id: game.id,
+        },
+    };
 };
 
 export default callback;

@@ -3,7 +3,6 @@
 import games from 'components/games';
 import Game from 'components/game';
 import apiDeleteGame from 'api/game/delete';
-import {anyObject} from 'mock/objects';
 
 describe('API game/delete', () => {
     afterEach(() => {
@@ -11,16 +10,9 @@ describe('API game/delete', () => {
     });
 
     it('should raise error', () => {
-        const end = jest.fn();
-        const status = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {end, status});
-        const request: express$Request = Object.assign(anyObject(), {body: {id: '1'}});
+        const result = apiDeleteGame({id: '1'});
 
-        apiDeleteGame(request, response);
-
-        expect(end).toHaveBeenCalledTimes(1);
-        expect(status).toHaveBeenCalledWith(400);
-        expect(status).toHaveBeenCalledTimes(1);
+        expect(result.status).toBe(400);
         expect(games.count).toBe(0);
     });
 
@@ -29,18 +21,11 @@ describe('API game/delete', () => {
 
         games.add(game);
 
-        const end = jest.fn();
-        const status = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {end, status});
-        const request: express$Request = Object.assign(anyObject(), {body: {id: game.id}});
-
         expect(games.count).toBe(1);
 
-        apiDeleteGame(request, response);
+        const result = apiDeleteGame({id: game.id});
 
-        expect(end).toHaveBeenCalledTimes(1);
-        expect(status).toHaveBeenCalledWith(204);
-        expect(status).toHaveBeenCalledTimes(1);
+        expect(result.status).toBe(204);
         expect(games.count).toBe(0);
     });
 });

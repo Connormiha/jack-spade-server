@@ -1,18 +1,18 @@
 // @flow
 
 import deleteUser from 'actions/deleteUser';
+import type {TypeResult} from 'components/request/types';
 
-const callback = (req: express$Request, res: express$Response): void => {
-    const {body}: any = req;
+type TypeBody = {
+    id: string,
+};
+
+const callback = (body: TypeBody): TypeResult => {
     const result = deleteUser(body.id);
 
-    if (result.success) {
-        res.status(204);
-    } else {
-        res.status(400);
-    }
-
-    res.end();
+    return {
+        status: result.success ? 204 : 400,
+    };
 };
 
 export default callback;

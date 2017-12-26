@@ -1,8 +1,7 @@
 // @flow
 
 import users from 'components/users';
-import apiCreateGame from 'api/user/create';
-import {anyObject} from 'mock/objects';
+import apiCreateUser from 'api/user/create';
 
 describe('API user/create', () => {
     afterEach(() => {
@@ -10,13 +9,10 @@ describe('API user/create', () => {
     });
 
     it('should create user', () => {
-        const json = jest.fn();
-        const response: express$Response = Object.assign(anyObject(), {json});
-        const request: express$Request = anyObject();
+        const result = apiCreateUser();
 
-        apiCreateGame(request, response);
-
-        expect(json).toHaveBeenCalledTimes(1);
+        expect(result.status).toBe(200);
+        expect(result.message.id).toBeTruthy();
         expect(users.count).toBe(1);
     });
 });
