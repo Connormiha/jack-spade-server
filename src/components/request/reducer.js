@@ -4,6 +4,8 @@ import setPrediciton from 'api/game/setPrediction';
 import addPlayer from 'api/game/addPlayer';
 import createGame from 'api/game/create';
 import deleteGame from 'api/game/delete';
+import createUser from 'api/user/create';
+import deleteUser from 'api/user/delete';
 import type {TypeBody, TypeResult} from 'components/request/types';
 
 const reducers = {
@@ -11,24 +13,16 @@ const reducers = {
     ADD_PLAYER: addPlayer,
     CREATE_GAME: createGame,
     DELETE_GAME: deleteGame,
+    CREATE_USER: createUser,
+    DELETE_USER: deleteUser,
 };
 
-const reducer = (body: TypeBody, res: express$Response, type: string) => {
+const reducer = (body: TypeBody, type: string): TypeResult => {
     if (typeof reducers[type] !== 'function') {
-        res.status(400);
-        res.end();
-        return;
+        return {status: 400};
     }
 
-    const result: TypeResult = reducers[type](body);
-
-    res.status(result.status);
-
-    if (result.message) {
-        res.json(result.message);
-    } else {
-        res.end();
-    }
+    return reducers[type](body);
 };
 
 export default reducer;

@@ -1,7 +1,6 @@
 // @flow
 
 import reducer from 'components/request/reducer';
-import {anyObject} from 'mock/objects';
 import games from 'components/games';
 import Game from 'components/game';
 import {GAME_NOT_FOUND} from 'errors';
@@ -13,14 +12,12 @@ describe('Request reducer', () => {
 
             games.add(game);
 
-            const json = jest.fn();
-            const status = jest.fn();
-            const end = jest.fn();
-            const response: express$Response = Object.assign(anyObject(), {json, end, status});
+            const result = reducer({gameId: '1'}, 'ADD_PLAYER');
 
-            reducer({gameId: '1'}, response, 'ADD_PLAYER');
-
-            expect(json).toHaveBeenCalledTimes(1);
+            expect(result.status).toBe(200);
+            expect(result.message).toEqual({
+                id: game.getSnapshot().players[0].id,
+            });
             expect(game.countMembers).toBe(1);
         });
 
@@ -29,15 +26,10 @@ describe('Request reducer', () => {
 
             games.add(game);
 
-            const json = jest.fn();
-            const status = jest.fn();
-            const end = jest.fn();
-            const response: express$Response = Object.assign(anyObject(), {json, end, status});
+            const result = reducer({gameId: '2'}, 'ADD_PLAYER');
 
-            reducer({gameId: '2'}, response, 'ADD_PLAYER');
-
-            expect(json).toHaveBeenCalledTimes(1);
-            expect(json).toHaveBeenCalledWith({error: GAME_NOT_FOUND});
+            expect(result.status).toBe(400);
+            expect(result.message).toEqual({error: GAME_NOT_FOUND});
             expect(game.countMembers).toBe(0);
         });
     });

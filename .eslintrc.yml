@@ -74,6 +74,4 @@ rules:
   max-len:
   - error
   - 140
-globals:
-  express$Request: true
-  express$Response: true
+
