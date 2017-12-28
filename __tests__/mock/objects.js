@@ -1,3 +1,3 @@
 // @flow
 
-export const anyObject = (): any => ({});
+export const anyObject = (obj: any): any => (obj || {});

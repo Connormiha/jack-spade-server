@@ -4,6 +4,10 @@ import reducer from 'components/request/reducer';
 import type {TypeResult, TypeBody} from 'components/request/types';
 import type {IncomingMessage, ServerResponse} from 'http';
 
+export const DEFAULT_RESPONSE_HEADERS = {
+    'Content-Type': 'application/json',
+};
+
 const onBodyReady = (httpBody: any[], res: ServerResponse) => {
     const body = Buffer.concat(httpBody).toString();
     let jsonBody: TypeBody;
@@ -16,9 +20,7 @@ const onBodyReady = (httpBody: any[], res: ServerResponse) => {
 
     const result: TypeResult = reducer(jsonBody, jsonBody.type);
 
-    res.writeHead(result.status, {
-        'Content-Type': 'application/json',
-    });
+    res.writeHead(result.status, DEFAULT_RESPONSE_HEADERS);
 
     if (result.message) {
         res.end(JSON.stringify(result.message));
@@ -30,7 +32,7 @@ const onBodyReady = (httpBody: any[], res: ServerResponse) => {
 const handler = (req: IncomingMessage, res: ServerResponse) => {
     const httpBody = [];
 
-    res
+    req
         .on('data', (chunk) => {
             httpBody.push(chunk);
         })
