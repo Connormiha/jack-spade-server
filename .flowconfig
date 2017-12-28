@@ -1,12 +1,12 @@
 [lints]
 all=warn
 unclear-type=off
+unsafe-getters-setters=off
 
 [options]
 emoji=true
 module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
 module.system.node.resolve_dirname=__tests__
-unsafe.enable_getters_and_setters=true
 munge_underscores=true
 include_warnings=true
