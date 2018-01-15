@@ -17,7 +17,10 @@ describe('Request handler', () => {
 
         const writeHead = jest.fn();
         const end = jest.fn();
-        const request: IncomingMessage = Object.assign(anyObject(new events.EventEmitter()), {});
+        const request: IncomingMessage = Object.assign(
+            anyObject(new events.EventEmitter()),
+            {method: 'POST', url: 'https://site.com/api/game/add_player'},
+        );
         const response: ServerResponse = Object.assign(anyObject(), {writeHead, end});
 
         handler(request, response);
