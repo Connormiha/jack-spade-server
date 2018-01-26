@@ -26,14 +26,14 @@
   },
   "devDependencies": {
     "babel-eslint": "8.2.1",
-    "eslint": "4.15.0",
-    "eslint-plugin-flowtype": "2.41.0",
-    "eslint-plugin-jest": "21.6.2",
-    "flow-bin": "0.63.1",
+    "eslint": "4.16.0",
+    "eslint-plugin-flowtype": "2.42.0",
+    "eslint-plugin-jest": "21.7.0",
+    "flow-bin": "0.64.0",
     "gulp": "3.9.1",
-    "gulp-eslint": "4.0.1",
+    "gulp-eslint": "4.0.2",
     "husky": "0.14.3",
-    "jest": "22.1.1"
+    "jest": "22.1.4"
   },
   "dependencies": {
     "app-module-path": "2.2.0",
