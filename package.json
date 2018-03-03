@@ -25,21 +25,21 @@
     "upgrade": "yarn upgrade-interactive --exact --latest"
   },
   "devDependencies": {
-    "babel-eslint": "8.2.1",
-    "eslint": "4.16.0",
-    "eslint-plugin-flowtype": "2.42.0",
-    "eslint-plugin-jest": "21.7.0",
-    "flow-bin": "0.64.0",
+    "babel-eslint": "8.2.2",
+    "eslint": "4.18.2",
+    "eslint-plugin-flowtype": "2.46.1",
+    "eslint-plugin-jest": "21.12.3",
+    "flow-bin": "0.66.0",
     "gulp": "3.9.1",
     "gulp-eslint": "4.0.2",
     "husky": "0.14.3",
-    "jest": "22.1.4"
+    "jest": "22.4.2"
   },
   "dependencies": {
     "app-module-path": "2.2.0",
     "babel-cli": "6.26.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "lodash": "4.17.4"
+    "lodash": "4.17.5"
   }
 }
