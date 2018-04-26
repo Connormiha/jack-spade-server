@@ -32,7 +32,7 @@ describe('Utils/collections', () => {
         });
 
         it('should return honest random single card', () => {
-            const cardsCount: WeakMap<Card, number> = new Map();
+            const cardsCount: WeakMap<Card, number> = new WeakMap();
             const countCatches = 3000;
 
             card.CARD_DECK.forEach((card: Card) => {
