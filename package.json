@@ -29,7 +29,7 @@
     "eslint": "4.19.1",
     "eslint-plugin-flowtype": "2.46.3",
     "eslint-plugin-jest": "21.15.1",
-    "flow-bin": "0.70.0",
+    "flow-bin": "0.72.0",
     "gulp": "3.9.1",
     "gulp-eslint": "4.0.2",
     "husky": "0.14.3",
@@ -38,7 +38,7 @@
   "dependencies": {
     "app-module-path": "2.2.0",
     "babel-cli": "6.26.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
     "lodash": "4.17.10"
   }
