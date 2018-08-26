@@ -15,7 +15,7 @@
   "scripts": {
     "coverage": "jest --coverage --config jest.json",
     "coverage:open": "npm run coverage && open coverage/lcov-report/index.html",
-    "lint": "gulp lint",
+    "lint": "node lint.js",
     "precommit": "NODE_ENV=pre_commit npm run types && npm run lint && npm test",
     "prepush": "npm run lint && npm run types && npm test",
     "start": "npm run types && babel-node ./src/run.js",
@@ -25,15 +25,13 @@
     "upgrade": "yarn upgrade-interactive --exact --latest"
   },
   "devDependencies": {
-    "babel-eslint": "8.2.3",
-    "eslint": "4.19.1",
-    "eslint-plugin-flowtype": "2.49.3",
-    "eslint-plugin-jest": "21.17.0",
-    "flow-bin": "0.73.0",
-    "gulp": "3.9.1",
-    "gulp-eslint": "4.0.2",
+    "babel-eslint": "8.2.6",
+    "eslint": "5.4.0",
+    "eslint-plugin-flowtype": "2.50.0",
+    "eslint-plugin-jest": "21.21.0",
+    "flow-bin": "0.79.1",
     "husky": "0.14.3",
-    "jest": "23.1.0"
+    "jest": "23.5.0"
   },
   "dependencies": {
     "app-module-path": "2.2.0",
