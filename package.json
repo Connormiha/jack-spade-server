@@ -16,8 +16,6 @@
     "coverage": "jest --coverage --config jest.json",
     "coverage:open": "npm run coverage && open coverage/lcov-report/index.html",
     "lint": "node lint.js",
-    "precommit": "NODE_ENV=pre_commit npm run types && npm run lint && npm test",
-    "prepush": "npm run lint && npm run types && npm test",
     "start": "npm run types && babel-node ./src/run.js",
     "test": "jest --config jest.json",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --config jest.json",
@@ -25,19 +23,25 @@
     "upgrade": "yarn upgrade-interactive --exact --latest"
   },
   "devDependencies": {
-    "babel-eslint": "8.2.6",
-    "eslint": "5.4.0",
-    "eslint-plugin-flowtype": "2.50.0",
-    "eslint-plugin-jest": "21.22.0",
-    "flow-bin": "0.79.1",
-    "husky": "0.14.3",
-    "jest": "23.5.0"
+    "babel-eslint": "10.0.1",
+    "eslint": "5.6.0",
+    "eslint-plugin-flowtype": "2.50.3",
+    "eslint-plugin-jest": "21.22.1",
+    "flow-bin": "0.81.0",
+    "husky": "1.0.1",
+    "jest": "23.6.0"
   },
   "dependencies": {
     "app-module-path": "2.2.0",
     "babel-cli": "6.26.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
     "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "lodash": "4.17.10"
+    "lodash": "4.17.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "NODE_ENV=pre_commit npm run types && npm run lint && npm test",
+      "pre-push": "npm run lint && npm run types && npm test"
+    }
   }
 }
